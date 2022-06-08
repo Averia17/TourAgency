@@ -30,7 +30,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "bookmaker.urls"
+ROOT_URLCONF = "tour_agency.urls"
 
 TEMPLATES = [
     {
@@ -48,7 +48,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "bookmaker.wsgi.application"
+WSGI_APPLICATION = "tour_agency.wsgi.application"
 
 DATABASES = {
     "default": {

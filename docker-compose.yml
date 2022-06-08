@@ -6,17 +6,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file:
-      - ./bookmaker/.env
+      - ./tour_agency/.env
   backend:
-    build: ./bookmaker
+    build: ./tour_agency
     command: python manage.py runserver 0.0.0.0:8000
     restart: always
     volumes:
-      - ./bookmaker:/app/backend
+      - ./tour_agency:/app/backend
     ports:
       - "8000:8000"
     env_file:
-      - bookmaker/.env
+      - tour_agency/.env
     depends_on:
       - db
 
