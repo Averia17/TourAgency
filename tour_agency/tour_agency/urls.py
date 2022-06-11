@@ -3,10 +3,13 @@ from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
+from hotels.views import HotelsViewSet, RoomViewSet
 from users.views import UserViewSet, CustomTokenObtainPairView
 
 router = SimpleRouter()
 router.register("users", UserViewSet)
+router.register("hotels", HotelsViewSet)
+router.register("rooms", RoomViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
