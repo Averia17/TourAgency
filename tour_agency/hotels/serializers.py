@@ -20,6 +20,13 @@ class RoomTypeDetailSerializer(RoomTypeSerializer):
         )
 
 
+# TODO: search better way to create serializer with {id: "", name: ""}
+class SimpleHotelSerializer(ModelSerializer):
+    class Meta:
+        model = Hotel
+        fields = ("id", "name")
+
+
 class HotelSerializer(ModelSerializer):
     city = CitySerializer()
 

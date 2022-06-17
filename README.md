@@ -14,3 +14,6 @@ Use [docker-compose](https://docs.docker.com/compose/) to install tour agency.
 ```bash
 docker-compose up -d
 ```
+
+Нужно реализовать:
+1. Туры, поиск туров, фильтрация

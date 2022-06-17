@@ -4,30 +4,41 @@ from django.utils.translation import gettext_lazy as _
 from core.models import BaseModel
 
 
-class Country(BaseModel):
+class Location(BaseModel):
     name = models.CharField(_("Name"), unique=True, max_length=256)
 
     class Meta:
         app_label = "locations"
-        verbose_name_plural = "Countries"
+        ordering = ["name"]
+        abstract = True
 
     def __str__(self):
         return self.name
 
 
-class City(BaseModel):
-    name = models.CharField(_("Name"), max_length=256)
+class Continent(Location):
+    class Meta(Location.Meta):
+        verbose_name_plural = "Continents"
+
+
+class Country(Location):
+    continent = models.ForeignKey(Continent, on_delete=models.CASCADE)
+
+    class Meta(Location.Meta):
+        verbose_name_plural = "Countries"
+
+
+class City(Location):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
 
-    class Meta:
-        app_label = "locations"
+    class Meta(Location.Meta):
         verbose_name_plural = "Cities"
         constraints = [
             models.UniqueConstraint(fields=["name", "country"], name="uq_city_country")
         ]
 
     def __str__(self):
-        return f"{self.name}, {self.country.name}"
+        return f"{self.pk} {self.name}, {self.country.name}"
 
 
 class StreetMixin(models.Model):

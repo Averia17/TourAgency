@@ -1,7 +1,9 @@
+from datetime import timedelta
+
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Func
+from django.db.models import F, Func
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.constraints import ExclusionConstraint
@@ -12,7 +14,9 @@ from django.contrib.postgres.fields import (
 )
 
 from core.models import BaseModel
+from core.utils import one_day_hence
 from locations.models import StreetMixin
+from psycopg2.extras import DateTimeRange
 
 from users.models import User
 
@@ -100,11 +104,8 @@ class TsTzRange(Func):
     output_field = DateTimeRangeField()
 
 
-def one_day_hence():
-    return timezone.now() + timezone.timedelta(days=1)
-
-
 class RoomReservation(Rent):
+    # date_range = DateTimeRangeField()
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=one_day_hence)
     room = models.ForeignKey(
@@ -123,6 +124,16 @@ class RoomReservation(Rent):
         return super().save(self, *args, **kwargs)
 
     def is_range_already_reserved(self, start, end):
+        #  date_range = TsTzRange(start, end, RangeBoundary(True, True))
+        # date_range = DateTimeRange(start, end, bounds="[]")
+        # return self.objects.filter(date_range__contained_by=date_range).exists()
+        # self.objects.annotate(
+        #     period=Func(
+        #         F('start'),
+        #         F('end'),
+        #         function='DATERANGE',
+        #         output_field=DateRangeField())
+        # ).filter(period__overlap=date_range)
         return self.objects.filter(end__gte=start, start__lte=end).exists()
 
     class Meta:
