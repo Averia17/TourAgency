@@ -5,6 +5,7 @@ from django.conf import settings
 import django.contrib.postgres.constraints
 import django.contrib.postgres.fields.ranges
 import django.core.validators
+from django.contrib.postgres.operations import BtreeGistExtension
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
@@ -21,6 +22,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        BtreeGistExtension(),
         migrations.CreateModel(
             name='Hotel',
             fields=[
