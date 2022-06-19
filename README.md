@@ -8,8 +8,7 @@ Tour agency is a web application for people who are going on vacation.
 - Docker 
 
 ## Installation
-
-Use [docker-compose](https://docs.docker.com/compose/) to install tour agency.
+Change .env-example to .env and after this use [docker-compose](https://docs.docker.com/compose/) to install tour agency.
 
 ```bash
 docker-compose up -d

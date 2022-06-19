@@ -18,86 +18,218 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('locations', '0001_initial'),
+        ("locations", "0001_initial"),
     ]
 
     operations = [
         BtreeGistExtension(),
         migrations.CreateModel(
-            name='Hotel',
+            name="Hotel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('street', models.CharField(max_length=256, verbose_name='Street')),
-                ('name', models.CharField(max_length=256, unique=True, verbose_name='Name')),
-                ('stars_number', models.PositiveSmallIntegerField(validators=[django.core.validators.MaxValueValidator(5), django.core.validators.MinValueValidator(1)], verbose_name='Number of stars')),
-                ('description', models.CharField(blank=True, max_length=512, null=True, verbose_name='Description')),
-                ('image_url', models.URLField(blank=True, help_text='Absolute URL to public image file', null=True, verbose_name='Image url')),
-                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='locations.city')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                ("street", models.CharField(max_length=256, verbose_name="Street")),
+                (
+                    "name",
+                    models.CharField(max_length=256, unique=True, verbose_name="Name"),
+                ),
+                (
+                    "stars_number",
+                    models.PositiveSmallIntegerField(
+                        validators=[
+                            django.core.validators.MaxValueValidator(5),
+                            django.core.validators.MinValueValidator(1),
+                        ],
+                        verbose_name="Number of stars",
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True,
+                        max_length=512,
+                        null=True,
+                        verbose_name="Description",
+                    ),
+                ),
+                (
+                    "image_url",
+                    models.URLField(
+                        blank=True,
+                        help_text="Absolute URL to public image file",
+                        null=True,
+                        verbose_name="Image url",
+                    ),
+                ),
+                (
+                    "city",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="locations.city"
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Hotels',
+                "verbose_name_plural": "Hotels",
             },
         ),
         migrations.CreateModel(
-            name='Room',
+            name="Room",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('number', models.CharField(max_length=10, verbose_name='Number')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                ("number", models.CharField(max_length=10, verbose_name="Number")),
             ],
             options={
-                'verbose_name_plural': 'Rooms',
+                "verbose_name_plural": "Rooms",
             },
         ),
         migrations.CreateModel(
-            name='RoomType',
+            name="RoomType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('name', models.CharField(max_length=32, unique=True, verbose_name='Name')),
-                ('count_places', models.PositiveSmallIntegerField(verbose_name='Count places')),
-                ('is_family', models.BooleanField(default=False, verbose_name='Is family')),
-                ('has_balcony', models.BooleanField(default=False, verbose_name='Has balcony')),
-                ('has_own_bathroom', models.BooleanField(default=False, verbose_name='Has own bathroom')),
-                ('cost_per_day', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Cost per day')),
-                ('description', models.CharField(blank=True, max_length=512, null=True, verbose_name='Description')),
-                ('square', models.FloatField(verbose_name='Square')),
-                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='room_types', to='hotels.hotel')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "name",
+                    models.CharField(max_length=32, unique=True, verbose_name="Name"),
+                ),
+                (
+                    "count_places",
+                    models.PositiveSmallIntegerField(verbose_name="Count places"),
+                ),
+                (
+                    "is_family",
+                    models.BooleanField(default=False, verbose_name="Is family"),
+                ),
+                (
+                    "has_balcony",
+                    models.BooleanField(default=False, verbose_name="Has balcony"),
+                ),
+                (
+                    "has_own_bathroom",
+                    models.BooleanField(default=False, verbose_name="Has own bathroom"),
+                ),
+                (
+                    "cost_per_day",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="Cost per day"
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True,
+                        max_length=512,
+                        null=True,
+                        verbose_name="Description",
+                    ),
+                ),
+                ("square", models.FloatField(verbose_name="Square")),
+                (
+                    "hotel",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="room_types",
+                        to="hotels.hotel",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'RoomsTypes',
+                "verbose_name_plural": "RoomsTypes",
             },
         ),
         migrations.CreateModel(
-            name='RoomReservation',
+            name="RoomReservation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('start', models.DateTimeField(default=django.utils.timezone.now)),
-                ('end', models.DateTimeField(default=core.utils.one_day_hence)),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rented_dates', to='hotels.room')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                ("start", models.DateTimeField(default=django.utils.timezone.now)),
+                ("end", models.DateTimeField(default=core.utils.one_day_hence)),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rented_dates",
+                        to="hotels.room",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'RoomReservations',
+                "verbose_name_plural": "RoomReservations",
             },
         ),
         migrations.AddField(
-            model_name='room',
-            name='room_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='hotels.roomtype'),
+            model_name="room",
+            name="room_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="rooms",
+                to="hotels.roomtype",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='roomtype',
-            constraint=models.UniqueConstraint(fields=('name', 'hotel'), name='uq_name_hotel'),
+            model_name="roomtype",
+            constraint=models.UniqueConstraint(
+                fields=("name", "hotel"), name="uq_name_hotel"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='roomreservation',
-            constraint=django.contrib.postgres.constraints.ExclusionConstraint(expressions=((hotels.models.TsTzRange('start', 'end', django.contrib.postgres.fields.ranges.RangeBoundary()), '&&'), ('room', '=')), name='exclude_overlapping_reservations'),
+            model_name="roomreservation",
+            constraint=django.contrib.postgres.constraints.ExclusionConstraint(
+                expressions=(
+                    (
+                        hotels.models.TsTzRange(
+                            "start",
+                            "end",
+                            django.contrib.postgres.fields.ranges.RangeBoundary(),
+                        ),
+                        "&&",
+                    ),
+                    ("room", "="),
+                ),
+                name="exclude_overlapping_reservations",
+            ),
         ),
     ]

@@ -39,7 +39,7 @@ class Hotel(BaseModel, StreetMixin):
     def __str__(self):
         return f"{self.name}: {self.get_full_name()}"
 
-    class Meta:
+    class Meta(StreetMixin.Meta):
         app_label = "hotels"
         verbose_name_plural = "Hotels"
 

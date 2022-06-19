@@ -1,6 +1,8 @@
+from django.contrib.gis.geos import Point
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from django.contrib.gis.db.models import PointField
 from core.models import BaseModel
 
 
@@ -30,6 +32,10 @@ class Country(Location):
 
 class City(Location):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    # TODO: in future remove null=true blank=true
+    location = PointField(
+        geography=True, default=Point(0.0, 0.0), null=True, blank=True
+    )
 
     class Meta(Location.Meta):
         verbose_name_plural = "Cities"

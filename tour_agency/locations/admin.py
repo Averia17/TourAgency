@@ -40,7 +40,7 @@ class CityAdmin(admin.ModelAdmin):
     fieldsets = [
         (
             None,
-            {"fields": ["name", "country"]},
+            {"fields": ["name", "country", "location"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]

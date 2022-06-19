@@ -5,8 +5,8 @@ from hotels.models import Hotel, Room, RoomReservation, RoomType
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ["name", "stars_number", "city"]
-    list_filter = ["city", "stars_number"]
+    list_display = ["name", "stars_number"]
+    list_filter = ["stars_number"]
     search_fields = ["name"]
     readonly_fields = ["created", "modified"]
     fieldsets = [
