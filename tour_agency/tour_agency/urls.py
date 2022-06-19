@@ -7,7 +7,7 @@ from hotels.views import HotelsViewSet, RoomViewSet
 from tours.views import MultiCityTourViewSet
 from users.views import UserViewSet, CustomTokenObtainPairView
 
-router = SimpleRouter()
+router = SimpleRouter(trailing_slash=True)
 router.register("users", UserViewSet)
 router.register("hotels", HotelsViewSet)
 router.register("rooms", RoomViewSet)
