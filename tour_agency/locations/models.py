@@ -34,8 +34,16 @@ class City(Location):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     # TODO: in future remove null=true blank=true
     location = PointField(
-        geography=True, default=Point(0.0, 0.0), null=True, blank=True
+        geography=True, default=Point(27.56, 53.9), null=True, blank=True
     )
+
+    @property
+    def longitude(self):
+        return self.location.x
+
+    @property
+    def latitude(self):
+        return self.location.y
 
     class Meta(Location.Meta):
         verbose_name_plural = "Cities"

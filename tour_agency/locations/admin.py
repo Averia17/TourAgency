@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.gis.admin import GISModelAdmin
 
 from locations.models import Country, City, Continent
 
@@ -32,15 +33,15 @@ class CountryAdmin(admin.ModelAdmin):
 
 
 @admin.register(City)
-class CityAdmin(admin.ModelAdmin):
+class CityAdmin(GISModelAdmin):
     list_display = ["name", "country"]
     list_filter = ["country"]
     search_fields = ["name"]
-    readonly_fields = ["created", "modified"]
+    readonly_fields = ["created", "modified", "longitude", "latitude"]
     fieldsets = [
         (
             None,
-            {"fields": ["name", "country", "location"]},
+            {"fields": ["name", "country", "longitude", "latitude", "location"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]

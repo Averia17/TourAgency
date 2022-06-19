@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     "corsheaders",
     "rest_framework",
+    # TODO:remove gis if not needed
+    "rest_framework_gis",
     "users",
     "hotels",
     "locations",
