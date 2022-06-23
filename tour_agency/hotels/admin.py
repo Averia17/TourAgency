@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from hotels.models import Hotel, Room, RoomReservation, RoomType
+from hotels.models import Hotel, Room, RoomReservation, RoomType, Convenience
 
 
 @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ["name", "stars_number"]
+    list_display = ["id", "name", "stars_number"]
     list_filter = ["stars_number"]
     search_fields = ["name"]
     readonly_fields = ["created", "modified"]
@@ -19,7 +19,6 @@ class HotelAdmin(admin.ModelAdmin):
                     "street",
                     "city",
                     "description",
-                    "image_url",
                 ]
             },
         ),
@@ -29,8 +28,8 @@ class HotelAdmin(admin.ModelAdmin):
 
 @admin.register(RoomType)
 class RoomTypeAdmin(admin.ModelAdmin):
-    list_display = ["name", "hotel", "cost_per_day"]
-    list_filter = ["hotel", "is_family", "has_balcony"]
+    list_display = ["id", "name", "hotel", "cost_per_day"]
+    list_filter = ["hotel", "is_family"]
     search_fields = ["name"]
     readonly_fields = ["created", "modified"]
     fieldsets = [
@@ -44,8 +43,8 @@ class RoomTypeAdmin(admin.ModelAdmin):
                     "count_places",
                     "square",
                     "is_family",
-                    "has_balcony",
                     "description",
+                    "conveniences",
                 ]
             },
         ),
@@ -82,6 +81,20 @@ class RoomReservationAdmin(admin.ModelAdmin):
         (
             None,
             {"fields": ["room", "user", "start", "end"]},
+        ),
+        ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
+    ]
+
+
+@admin.register(Convenience)
+class ConvenienceAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "icon"]
+    search_fields = ["name"]
+    readonly_fields = ["created", "modified"]
+    fieldsets = [
+        (
+            None,
+            {"fields": ["name", "icon"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]

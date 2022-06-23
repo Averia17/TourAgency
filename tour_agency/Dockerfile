@@ -6,7 +6,8 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app/backend
 RUN apt-get update \
     && apt-get -y install curl \
-    && apt-get install libgdal-dev -y
+    && apt-get install libgdal-dev -y \
+    && apt-get install libjpeg-dev
 COPY . .
 
 RUN pip install --upgrade pip

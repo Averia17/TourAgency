@@ -1,13 +1,15 @@
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from hotels.views import HotelsViewSet, RoomViewSet
+from tour_agency import settings
 from tours.views import MultiCityTourViewSet
 from users.views import UserViewSet, CustomTokenObtainPairView
 
-router = SimpleRouter(trailing_slash=True)
+router = SimpleRouter()
 router.register("users", UserViewSet)
 router.register("hotels", HotelsViewSet)
 router.register("rooms", RoomViewSet)
@@ -19,4 +21,4 @@ urlpatterns = [
     path("refresh-token/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token-verify/", TokenVerifyView.as_view(), name="token-verify"),
     path("api/", include(router.urls)),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

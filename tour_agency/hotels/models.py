@@ -21,6 +21,18 @@ from psycopg2.extras import DateTimeRange
 from users.models import User
 
 
+class Convenience(BaseModel):
+    icon = models.OneToOneField("images.Image", on_delete=models.SET_NULL, null=True)
+    name = models.CharField(_("Name"), unique=True, max_length=256)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        app_label = "hotels"
+        verbose_name_plural = "Conveniences"
+
+
 class Hotel(BaseModel, StreetMixin):
     name = models.CharField(_("Name"), unique=True, max_length=256)
     stars_number = models.PositiveSmallIntegerField(
@@ -29,12 +41,7 @@ class Hotel(BaseModel, StreetMixin):
     description = models.CharField(
         _("Description"), max_length=512, null=True, blank=True
     )
-    image_url = models.URLField(
-        _("Image url"),
-        help_text="Absolute URL to public image file",
-        null=True,
-        blank=True,
-    )
+    conveniences = models.ManyToManyField(Convenience, related_name="hotels")
 
     def __str__(self):
         return f"{self.name}: {self.get_full_name()}"
@@ -51,8 +58,6 @@ class RoomType(BaseModel):
     )
     count_places = models.PositiveSmallIntegerField(_("Count places"))
     is_family = models.BooleanField(_("Is family"), default=False)
-    has_balcony = models.BooleanField(_("Has balcony"), default=False)
-    has_own_bathroom = models.BooleanField(_("Has own bathroom"), default=False)
     cost_per_day = models.DecimalField(
         _("Cost per day"), max_digits=10, decimal_places=2
     )
@@ -60,10 +65,8 @@ class RoomType(BaseModel):
         _("Description"), max_length=512, null=True, blank=True
     )
     square = models.FloatField(_("Square"))
+    conveniences = models.ManyToManyField(Convenience, related_name="rooms")
 
-    # image_url = models.URLField(
-    #     _("Image url"), help_text="Absolute URL to public image file"
-    # )
     def __str__(self):
         return f"{self.name}: {self.hotel}"
 
