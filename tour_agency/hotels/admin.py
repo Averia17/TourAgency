@@ -19,6 +19,7 @@ class HotelAdmin(admin.ModelAdmin):
                     "street",
                     "city",
                     "description",
+                    "conveniences",
                 ]
             },
         ),

@@ -42,24 +42,6 @@ class FileStandardUploadService:
         return file_name, file_type
 
     @transaction.atomic
-    def batch_create(self, ignore_conflicts=False, **kwargs):
-        objects = []
-        for image in self.file_obj:
-            _validate_file_size(image)
-            file_name, file_type = self._infer_file_name_and_type()
-            objects.append(
-                self.model(
-                    image=image,
-                    original_file_name=file_name,
-                    file_name=file_generate_name(file_name),
-                    file_type=file_type,
-                    uploaded_by=self.user,
-                    **kwargs,
-                )
-            )
-        self.model.objects.bulk_create(objects, ignore_conflicts=ignore_conflicts)
-
-    @transaction.atomic
     def create(self, file_name: str = "", file_type: str = "", **kwargs) -> Image:
         _validate_file_size(self.file_obj)
 
