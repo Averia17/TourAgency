@@ -52,7 +52,11 @@ class TourFeature(BaseModel):
         base_field=models.CharField(max_length=10, choices=MEALS, default="BREAKFAST")
     )
     hotel = models.ForeignKey(
-        Hotel, related_name="tour_features", on_delete=models.SET_NULL, null=True
+        Hotel,
+        related_name="tour_features",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     city = models.ForeignKey(
         City, related_name="tour_features", on_delete=models.CASCADE

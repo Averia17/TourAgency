@@ -1,7 +1,8 @@
-from rest_framework.fields import MultipleChoiceField
+from rest_framework.fields import CharField
 from rest_framework.serializers import ModelSerializer
 
 from core.constants import MEALS
+from core.serializer_fields import ChoiceArrayField
 from hotels.serializers import SimpleHotelSerializer
 from locations.serializers import CitySerializer
 from tours.models import MultiCityTour, TourFeature
@@ -10,7 +11,7 @@ from tours.models import MultiCityTour, TourFeature
 class TourFeatureSerializer(ModelSerializer):
     hotel = SimpleHotelSerializer()
     city = CitySerializer()
-    food = MultipleChoiceField(choices=MEALS)
+    food = ChoiceArrayField(choices=MEALS)
 
     class Meta:
         model = TourFeature
@@ -26,6 +27,8 @@ class TourFeatureSerializer(ModelSerializer):
 
 class MultiCityTourSerializer(ModelSerializer):
     features = TourFeatureSerializer(source="tour_features", many=True)
+    # tour_type = ChoiceField(choices=TOUR_TYPES)
+    tour_type = CharField(source="get_tour_type_display")
 
     class Meta:
         model = MultiCityTour

@@ -8,3 +8,4 @@ django-cors-headers==3.13.0
 djangorestframework-gis==1.0
 Pillow==9.1.1
 olefile==0.46
+django-filter==22.1

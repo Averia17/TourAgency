@@ -24,14 +24,18 @@ class Continent(Location):
 
 
 class Country(Location):
-    continent = models.ForeignKey(Continent, on_delete=models.CASCADE)
+    continent = models.ForeignKey(
+        Continent, related_name="countries", on_delete=models.CASCADE
+    )
 
     class Meta(Location.Meta):
         verbose_name_plural = "Countries"
 
 
 class City(Location):
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(
+        Country, related_name="cities", on_delete=models.CASCADE
+    )
     # TODO: in future remove null=true blank=true
     location = PointField(
         geography=True, default=Point(27.56, 53.9), null=True, blank=True
