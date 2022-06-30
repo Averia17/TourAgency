@@ -11,3 +11,5 @@ MEALS = (
     ("SUPPER", "Supper"),
     ("DINNER", "Dinner"),
 )
+
+CHECK_IN_TIME = "13:00:00"

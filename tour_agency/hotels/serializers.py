@@ -1,10 +1,9 @@
-import json
-
+from django.utils import timezone
 from rest_framework.fields import CharField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
-from core.utils import string_to_list
+from core.utils import string_to_list, string_to_datetime
 from hotels.models import Hotel, RoomType, Convenience
 from images.models import HotelImage
 from images.serializers import ImageSerializer
@@ -25,10 +24,26 @@ class RoomTypeSerializer(ModelSerializer):
 
     class Meta:
         model = RoomType
-        fields = ("id", "name", "cost_per_day", "count_places", "conveniences")
+        fields = (
+            "id",
+            "name",
+            "cost_per_day",
+            "count_places",
+            "conveniences",
+        )
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        start_date = self.context["request"].query_params.get("start", None)
+        end_date = self.context["request"].query_params.get("end", None)
+        if start_date and end_date:
+            result["is_available"] = instance.is_available(
+                string_to_datetime(start_date), string_to_datetime(end_date)
+            )
+        return result
 
 
-class RoomTypeDetailSerializer(RoomTypeSerializer):
+class RoomDetailSerializer(RoomTypeSerializer):
     class Meta(RoomTypeSerializer.Meta):
         fields = RoomTypeSerializer.Meta.fields + (
             "square",
@@ -77,16 +92,20 @@ class HotelSerializer(ModelSerializer):
         images = validated_data.pop("images")
         user = self.context["request"].user
         instance = super().create(validated_data)
+        service = FileStandardUploadService(HotelImage, user)
         for image in images:
-            FileStandardUploadService(HotelImage, user, image).create(hotel=instance)
+            service.create(image, hotel=instance)
         return instance
 
     def update(self, instance, validated_data):
-        images = validated_data.pop("images")
+        images = validated_data.pop("images", None)
         user = self.context["request"].user
         instance = super().update(instance, validated_data)
-        for image in images:
-            FileStandardUploadService(HotelImage, user, image).create(hotel=instance)
+        if images is not None:
+            instance.images.clear()
+            service = FileStandardUploadService(HotelImage, user)
+            for image in images:
+                service.create(image, hotel=instance)
         return instance
 
 

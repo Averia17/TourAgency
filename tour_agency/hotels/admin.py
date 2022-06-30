@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from hotels.models import Hotel, Room, RoomReservation, RoomType, Convenience
+from hotels.models import Hotel, RoomType, Convenience, RoomReservation
 
 
 @admin.register(Hotel)
@@ -42,46 +42,13 @@ class RoomTypeAdmin(admin.ModelAdmin):
                     "hotel",
                     "cost_per_day",
                     "count_places",
+                    "count_rooms",
                     "square",
                     "is_family",
                     "description",
                     "conveniences",
                 ]
             },
-        ),
-        ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
-    ]
-
-
-@admin.register(Room)
-class RoomAdmin(admin.ModelAdmin):
-    list_display = ["number", "room_type"]
-    list_filter = ["room_type"]
-    search_fields = ["number"]
-    readonly_fields = ["created", "modified"]
-    fieldsets = [
-        (
-            None,
-            {
-                "fields": [
-                    "number",
-                    "room_type",
-                ]
-            },
-        ),
-        ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
-    ]
-
-
-@admin.register(RoomReservation)
-class RoomReservationAdmin(admin.ModelAdmin):
-    list_display = ["room", "start", "end"]
-    list_filter = ["room", "user"]
-    readonly_fields = ["created", "modified"]
-    fieldsets = [
-        (
-            None,
-            {"fields": ["room", "user", "start", "end"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]
@@ -96,6 +63,20 @@ class ConvenienceAdmin(admin.ModelAdmin):
         (
             None,
             {"fields": ["name", "icon"]},
+        ),
+        ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
+    ]
+
+
+@admin.register(RoomReservation)
+class RoomReservationAdmin(admin.ModelAdmin):
+    list_display = ["id", "room", "start", "end"]
+    search_fields = ["room"]
+    readonly_fields = ["created", "modified"]
+    fieldsets = [
+        (
+            None,
+            {"fields": ["room", "start", "end", "user"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]

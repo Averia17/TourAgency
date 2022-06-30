@@ -14,6 +14,8 @@ class Tour(models.Model):
     description = models.CharField(
         _("Description"), max_length=512, null=True, blank=True
     )
+    start = models.DateTimeField(_("From time"), default=timezone.now)
+    end = models.DateTimeField(_("End time"), default=one_day_hence)
 
     class Meta:
         app_label = "tours"
@@ -27,6 +29,9 @@ class OneCityTour(BaseModel, Tour):
     city = models.ForeignKey(
         City, related_name="one_city_tours", on_delete=models.CASCADE
     )
+    hotel = models.ForeignKey(
+        Hotel, related_name="one_city_tours", on_delete=models.PROTECT
+    )
 
     class Meta(Tour.Meta):
         verbose_name_plural = "OneWayTours"
@@ -34,8 +39,6 @@ class OneCityTour(BaseModel, Tour):
 
 class MultiCityTour(BaseModel, Tour):
     tour_type = models.CharField(max_length=10, choices=TOUR_TYPES, default="LAND")
-    start = models.DateTimeField(_("From time"), default=timezone.now)
-    end = models.DateTimeField(_("End time"), default=one_day_hence)
     price = models.DecimalField(_("Price"), max_digits=10, decimal_places=2)
 
     class Meta(Tour.Meta):
@@ -54,7 +57,7 @@ class TourFeature(BaseModel):
     hotel = models.ForeignKey(
         Hotel,
         related_name="tour_features",
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
     )

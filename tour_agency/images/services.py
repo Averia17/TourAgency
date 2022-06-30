@@ -20,16 +20,15 @@ def _validate_file_size(file_obj):
 
 
 class FileStandardUploadService:
-    def __init__(self, model, user: User, file_obj):
+    def __init__(self, model, user: User):
         self.model = model
         self.user = user
-        self.file_obj = file_obj
 
     def _infer_file_name_and_type(
-        self, file_name: str = "", file_type: str = ""
+        self, file, file_name: str = "", file_type: str = ""
     ) -> Tuple[str, str]:
         if not file_name:
-            file_name = self.file_obj.name
+            file_name = file.name
 
         if not file_type:
             guessed_file_type, encoding = mimetypes.guess_type(file_name)
@@ -42,13 +41,15 @@ class FileStandardUploadService:
         return file_name, file_type
 
     @transaction.atomic
-    def create(self, file_name: str = "", file_type: str = "", **kwargs) -> Image:
-        _validate_file_size(self.file_obj)
+    def create(self, file, file_name: str = "", file_type: str = "", **kwargs) -> Image:
+        _validate_file_size(file)
 
-        file_name, file_type = self._infer_file_name_and_type(file_name, file_type)
+        file_name, file_type = self._infer_file_name_and_type(
+            file, file_name, file_type
+        )
 
         obj = self.model(
-            image=self.file_obj,
+            image=file,
             original_file_name=file_name,
             file_name=file_generate_name(file_name),
             file_type=file_type,
@@ -63,22 +64,29 @@ class FileStandardUploadService:
 
     @transaction.atomic
     def update(
-        self, image: Image, image_name: str = "", image_type: str = "", **kwargs
+        self,
+        instance: Image,
+        file,
+        image_name: str = "",
+        image_type: str = "",
+        **kwargs,
     ) -> Image:
-        _validate_file_size(self.file_obj)
+        _validate_file_size(file)
 
-        image_name, image_type = self._infer_file_name_and_type(image_name, image_type)
+        image_name, image_type = self._infer_file_name_and_type(
+            file, image_name, image_type
+        )
         obj_fields = {
-            "image": self.file_obj,
+            "image": file,
             "original_file_name": image_name,
             "file_name": file_generate_name(image_name),
             "file_type": image_type,
             "uploaded_by": self.user,
             **kwargs,
         }
-        image.__dict__.update(obj_fields)
+        instance.__dict__.update(obj_fields)
 
-        image.full_clean()
-        image.save()
+        instance.full_clean()
+        instance.save()
 
-        return image
+        return instance

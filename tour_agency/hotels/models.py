@@ -1,22 +1,16 @@
-from datetime import timedelta
-
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import F, Func
+from django.db.models import Func
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.contrib.postgres.constraints import ExclusionConstraint
 from django.contrib.postgres.fields import (
-    RangeOperators,
     DateTimeRangeField,
-    RangeBoundary,
 )
 
 from core.models import BaseModel
 from core.utils import one_day_hence
 from locations.models import StreetMixin
-from psycopg2.extras import DateTimeRange
 
 from users.models import User
 
@@ -41,7 +35,9 @@ class Hotel(BaseModel, StreetMixin):
     description = models.CharField(
         _("Description"), max_length=512, null=True, blank=True
     )
-    conveniences = models.ManyToManyField(Convenience, related_name="hotels")
+    conveniences = models.ManyToManyField(
+        Convenience, related_name="hotels", blank=True
+    )
 
     def __str__(self):
         return f"{self.name}: {self.get_full_name()}"
@@ -56,7 +52,7 @@ class RoomType(BaseModel):
     hotel = models.ForeignKey(
         Hotel, related_name="room_types", on_delete=models.CASCADE
     )
-    count_places = models.PositiveSmallIntegerField(_("Count places"))
+    count_places = models.PositiveSmallIntegerField(_("Count places"), default=2)
     is_family = models.BooleanField(_("Is family"), default=False)
     cost_per_day = models.DecimalField(
         _("Cost per day"), max_digits=10, decimal_places=2
@@ -65,34 +61,22 @@ class RoomType(BaseModel):
         _("Description"), max_length=512, null=True, blank=True
     )
     square = models.FloatField(_("Square"))
-    conveniences = models.ManyToManyField(Convenience, related_name="rooms")
+    conveniences = models.ManyToManyField(Convenience, related_name="rooms", blank=True)
+    count_rooms = models.PositiveSmallIntegerField(_("Count rooms"))
 
     def __str__(self):
         return f"{self.name}: {self.hotel}"
 
-    class Meta:
-        app_label = "hotels"
-        verbose_name_plural = "RoomsTypes"
-        constraints = [
-            models.UniqueConstraint(fields=["name", "hotel"], name="uq_name_hotel")
-        ]
-
-
-class Room(BaseModel):
-    number = models.CharField(_("Number"), max_length=10)
-
-    room_type = models.ForeignKey(
-        RoomType,
-        related_name="rooms",
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return f"{self.number}: {self.room_type.name}"
+    def is_available(self, start, end):
+        reserved_dates = self.rented_dates.filter(end__gte=start, start__lte=end)
+        return self.count_places > reserved_dates.count()
 
     class Meta:
         app_label = "hotels"
         verbose_name_plural = "Rooms"
+        constraints = [
+            models.UniqueConstraint(fields=["name", "hotel"], name="uq_name_hotel")
+        ]
 
 
 class Rent(BaseModel):
@@ -102,17 +86,17 @@ class Rent(BaseModel):
         abstract = True
 
 
+# TODO: remove
 class TsTzRange(Func):
     function = "TSTZRANGE"
     output_field = DateTimeRangeField()
 
 
 class RoomReservation(Rent):
-    # date_range = DateTimeRangeField()
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=one_day_hence)
     room = models.ForeignKey(
-        Room, related_name="rented_dates", on_delete=models.CASCADE
+        RoomType, related_name="rented_dates", on_delete=models.CASCADE
     )
 
     def __str__(self):
@@ -121,39 +105,19 @@ class RoomReservation(Rent):
     def clean(self):
         if self.start > self.end:
             raise ValidationError("Start date cannot be bigger than end date")
+        if not self.room.is_available(self.start, self.end):
+            raise ValidationError("Room is not available for this dates")
 
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(self, *args, **kwargs)
 
     def is_range_already_reserved(self, start, end):
-        #  date_range = TsTzRange(start, end, RangeBoundary(True, True))
-        # date_range = DateTimeRange(start, end, bounds="[]")
-        # return self.objects.filter(date_range__contained_by=date_range).exists()
-        # self.objects.annotate(
-        #     period=Func(
-        #         F('start'),
-        #         F('end'),
-        #         function='DATERANGE',
-        #         output_field=DateRangeField())
-        # ).filter(period__overlap=date_range)
         return self.objects.filter(end__gte=start, start__lte=end).exists()
 
     class Meta:
         app_label = "hotels"
         verbose_name_plural = "RoomReservations"
-        constraints = [
-            ExclusionConstraint(
-                name="exclude_overlapping_reservations",
-                expressions=(
-                    (
-                        TsTzRange("start", "end", RangeBoundary()),
-                        RangeOperators.OVERLAPS,
-                    ),
-                    ("room", RangeOperators.EQUAL),
-                ),
-            ),
-        ]
 
 
 # will be rent a plane

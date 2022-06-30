@@ -5,7 +5,7 @@ from hotels.models import Hotel, RoomType
 from hotels.serializers import (
     HotelSerializer,
     HotelDetailSerializer,
-    RoomTypeDetailSerializer,
+    RoomDetailSerializer,
 )
 
 
@@ -29,4 +29,4 @@ class HotelsViewSet(ModelViewSet):
 
 class RoomViewSet(RetrieveModelMixin, GenericViewSet):
     queryset = RoomType.objects.all()
-    serializer_class = RoomTypeDetailSerializer
+    serializer_class = RoomDetailSerializer

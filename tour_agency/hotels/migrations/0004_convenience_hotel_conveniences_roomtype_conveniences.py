@@ -7,32 +7,54 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('images', '0001_initial'),
-        ('hotels', '0003_remove_hotel_image_url'),
+        ("images", "0001_initial"),
+        ("hotels", "0003_remove_hotel_image_url"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Convenience',
+            name="Convenience",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('name', models.CharField(max_length=256, unique=True, verbose_name='Name')),
-                ('icon', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='images.image')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "name",
+                    models.CharField(max_length=256, unique=True, verbose_name="Name"),
+                ),
+                (
+                    "icon",
+                    models.OneToOneField(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="images.image",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Conveniences',
+                "verbose_name_plural": "Conveniences",
             },
         ),
         migrations.AddField(
-            model_name='hotel',
-            name='conveniences',
-            field=models.ManyToManyField(related_name='hotels', to='hotels.convenience'),
+            model_name="hotel",
+            name="conveniences",
+            field=models.ManyToManyField(
+                blank=True, related_name="hotels", to="hotels.convenience"
+            ),
         ),
         migrations.AddField(
-            model_name='roomtype',
-            name='conveniences',
-            field=models.ManyToManyField(related_name='rooms', to='hotels.convenience'),
+            model_name="roomtype",
+            name="conveniences",
+            field=models.ManyToManyField(
+                blank=True, related_name="rooms", to="hotels.convenience"
+            ),
         ),
     ]
