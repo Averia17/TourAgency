@@ -30,6 +30,7 @@ class RoomTypeSerializer(ModelSerializer):
             "cost_per_day",
             "count_places",
             "conveniences",
+            "images",
         )
 
     def to_representation(self, instance):

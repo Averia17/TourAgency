@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
+from images.serializers import ImageSerializer
 from locations.models import City, Continent, Country, Destination
 
 
@@ -15,9 +16,11 @@ class CitySerializer(DestinationSerializer):
 
 
 class CountrySerializer(ModelSerializer):
+    images = ImageSerializer(many=True, required=False)
+
     class Meta:
         model = Country
-        fields = ("id", "name")
+        fields = ("id", "name", "images")
 
 
 class ContinentSerializer(ModelSerializer):

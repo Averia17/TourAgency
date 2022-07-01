@@ -4,7 +4,8 @@ from rest_framework.serializers import ModelSerializer
 from core.constants import MEALS
 from core.serializer_fields import ChoiceArrayField
 from hotels.serializers import SimpleHotelSerializer
-from locations.serializers import CitySerializer, DestinationSerializer
+from images.serializers import ImageSerializer
+from locations.serializers import DestinationSerializer
 from tours.models import MultiCityTour, TourFeature, OneCityTour
 
 
@@ -29,6 +30,7 @@ class MultiCityTourSerializer(ModelSerializer):
     features = TourFeatureSerializer(source="tour_features", many=True)
     # tour_type = ChoiceField(choices=TOUR_TYPES)
     tour_type = CharField(source="get_tour_type_display")
+    images = ImageSerializer(many=True, required=False)
 
     class Meta:
         model = MultiCityTour
@@ -41,6 +43,7 @@ class MultiCityTourSerializer(ModelSerializer):
             "end",
             "price",
             "features",
+            "images",
         )
 
     # def create(self, validated_data):
@@ -57,6 +60,17 @@ class MultiCityTourSerializer(ModelSerializer):
 
 
 class OneCityTourSerializer(ModelSerializer):
+    images = ImageSerializer(many=True, required=False)
+
     class Meta:
         model = OneCityTour
-        fields = ("id", "title", "description", "start", "end", "destination", "hotel")
+        fields = (
+            "id",
+            "title",
+            "description",
+            "start",
+            "end",
+            "destination",
+            "hotel",
+            "images",
+        )

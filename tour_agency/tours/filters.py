@@ -27,7 +27,9 @@ class ListFilter(Filter):
 
 
 class TourFilter(filters.FilterSet):
-    cities = ListFilter(field_name="tour_features__city__name", query_param="cities")
+    destinations = ListFilter(
+        field_name="tour_features__destination__name", query_param="destinations"
+    )
     tour_type = filters.ChoiceFilter(field_name="tour_type", choices=TOUR_TYPES)
 
     class Meta:

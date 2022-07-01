@@ -16,6 +16,7 @@ router.register("hotels", HotelsViewSet)
 router.register("rooms", RoomViewSet)
 router.register("tours", MultiCityTourViewSet)
 router.register("continents", ContinentViewSet)
+router.register("countries", ContinentViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
