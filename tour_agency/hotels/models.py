@@ -1,12 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Func
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.contrib.postgres.fields import (
-    DateTimeRangeField,
-)
 
 from core.models import BaseModel
 from core.utils import one_day_hence
@@ -84,12 +80,6 @@ class Rent(BaseModel):
 
     class Meta:
         abstract = True
-
-
-# TODO: remove
-class TsTzRange(Func):
-    function = "TSTZRANGE"
-    output_field = DateTimeRangeField()
 
 
 class RoomReservation(Rent):

@@ -6,7 +6,7 @@ from core.constants import TOUR_TYPES, MEALS
 from core.models import BaseModel, ChoiceArrayField
 from core.utils import one_day_hence
 from hotels.models import Hotel
-from locations.models import City
+from locations.models import City, Destination
 
 
 class Tour(models.Model):
@@ -26,15 +26,15 @@ class Tour(models.Model):
 
 
 class OneCityTour(BaseModel, Tour):
-    city = models.ForeignKey(
-        City, related_name="one_city_tours", on_delete=models.CASCADE
+    destination = models.ForeignKey(
+        Destination, related_name="one_city_tours", on_delete=models.CASCADE
     )
     hotel = models.ForeignKey(
         Hotel, related_name="one_city_tours", on_delete=models.PROTECT
     )
 
     class Meta(Tour.Meta):
-        verbose_name_plural = "OneWayTours"
+        verbose_name_plural = "OneCityTours"
 
 
 class MultiCityTour(BaseModel, Tour):
@@ -42,7 +42,7 @@ class MultiCityTour(BaseModel, Tour):
     price = models.DecimalField(_("Price"), max_digits=10, decimal_places=2)
 
     class Meta(Tour.Meta):
-        verbose_name_plural = "MultiWaysTours"
+        verbose_name_plural = "MultiCityTours"
 
 
 class TourFeature(BaseModel):
@@ -61,8 +61,8 @@ class TourFeature(BaseModel):
         null=True,
         blank=True,
     )
-    city = models.ForeignKey(
-        City, related_name="tour_features", on_delete=models.CASCADE
+    destination = models.ForeignKey(
+        Destination, related_name="tour_features", on_delete=models.CASCADE
     )
     tour = models.ForeignKey(
         MultiCityTour, related_name="tour_features", on_delete=models.CASCADE
@@ -71,7 +71,7 @@ class TourFeature(BaseModel):
     class Meta(Tour.Meta):
         app_label = "tours"
         verbose_name_plural = "TourFeature"
-        ordering = ["day"]
+        ordering = ["tour", "day"]
 
     def __str__(self):
         return f"{self.day}: {self.title}"

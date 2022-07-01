@@ -3,14 +3,35 @@ from collections import OrderedDict
 from django.contrib import admin, messages
 from django import forms
 from django.core.exceptions import ValidationError
+from images.models import (
+    Image,
+    HotelImage,
+    RoomImage,
+    CountryImage,
+    MultiCityTourImage,
+    OneCityTourImage,
+)
+
 from images.services import FileStandardUploadService
-from images.models import Image, HotelImage, RoomImage, TourImage
+
+
+def save_related_images(request, form, formset, related_field):
+    instances = formset.save(commit=False)
+    service = FileStandardUploadService(formset.model, request.user)
+    for instance in instances:
+        service.create(instance.image, {related_field: form.instance})
+    formset.save_existing_objects()
 
 
 class ImageForm(forms.ModelForm):
     class Meta:
         model = Image
         fields = ["image"]
+
+
+class ImageInline(admin.TabularInline):
+    extra = 1
+    form = ImageForm
 
 
 @admin.register(Image)
@@ -51,19 +72,14 @@ class ImageAdmin(admin.ModelAdmin):
 
         return readonly_fields
 
-    def save_model(self, request, obj, form, change, **kwargs):
+    def save_model(self, request, obj, form, change):
         try:
             cleaned_data = form.cleaned_data
-
-            service = FileStandardUploadService(
-                self.model, request.user, cleaned_data["image"]
-            )
+            related_fields = {}
+            service = FileStandardUploadService(self.model, request.user)
             for field in self.additional_fields:
-                kwargs[field] = cleaned_data.get(field)
-            if change:
-                service.update(file=obj, **kwargs)
-            else:
-                service.create(**kwargs)
+                related_fields[field] = cleaned_data.get(field)
+            service.create(cleaned_data["image"], related_fields)
         except ValidationError as exc:
             self.message_user(request, str(exc), messages.ERROR)
 
@@ -79,9 +95,19 @@ class HotelImageAdmin(ImageAdmin):
 
 @admin.register(RoomImage)
 class RoomImageAdmin(ImageAdmin):
-    additional_form_fields = ["room"]
+    additional_fields = ["room"]
 
 
-@admin.register(TourImage)
-class RoomImageAdmin(ImageAdmin):
-    additional_form_fields = ["tour"]
+@admin.register(MultiCityTourImage)
+class MultyCityTourAdmin(ImageAdmin):
+    additional_fields = ["tour"]
+
+
+@admin.register(OneCityTourImage)
+class OneCityTourAdmin(ImageAdmin):
+    additional_fields = ["tour"]
+
+
+@admin.register(CountryImage)
+class CountryImageAdmin(ImageAdmin):
+    additional_fields = ["country"]

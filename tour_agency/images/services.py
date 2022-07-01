@@ -40,8 +40,14 @@ class FileStandardUploadService:
 
         return file_name, file_type
 
+    # TODO: try to rewrite with objects.bulk_create()
+    def batch_create(self, files, related_fields):
+        return [self.create(file, related_fields) for file in files]
+
     @transaction.atomic
-    def create(self, file, file_name: str = "", file_type: str = "", **kwargs) -> Image:
+    def create(
+        self, file, related_fields, file_name: str = "", file_type: str = ""
+    ) -> Image:
         _validate_file_size(file)
 
         file_name, file_type = self._infer_file_name_and_type(
@@ -54,7 +60,7 @@ class FileStandardUploadService:
             file_name=file_generate_name(file_name),
             file_type=file_type,
             uploaded_by=self.user,
-            **kwargs,
+            **related_fields,
         )
 
         obj.full_clean()

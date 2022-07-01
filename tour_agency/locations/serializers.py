@@ -1,12 +1,17 @@
 from rest_framework.serializers import ModelSerializer
 
-from locations.models import City, Continent, Country
+from locations.models import City, Continent, Country, Destination
 
 
-class CitySerializer(ModelSerializer):
+class DestinationSerializer(ModelSerializer):
     class Meta:
-        model = City
+        model = Destination
         fields = ("id", "name", "longitude", "latitude")
+
+
+class CitySerializer(DestinationSerializer):
+    class Meta(DestinationSerializer.Meta):
+        model = City
 
 
 class CountrySerializer(ModelSerializer):

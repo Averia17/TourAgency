@@ -4,13 +4,13 @@ from rest_framework.serializers import ModelSerializer
 from core.constants import MEALS
 from core.serializer_fields import ChoiceArrayField
 from hotels.serializers import SimpleHotelSerializer
-from locations.serializers import CitySerializer
-from tours.models import MultiCityTour, TourFeature
+from locations.serializers import CitySerializer, DestinationSerializer
+from tours.models import MultiCityTour, TourFeature, OneCityTour
 
 
 class TourFeatureSerializer(ModelSerializer):
     hotel = SimpleHotelSerializer()
-    city = CitySerializer()
+    destination = DestinationSerializer()
     food = ChoiceArrayField(choices=MEALS)
 
     class Meta:
@@ -19,7 +19,7 @@ class TourFeatureSerializer(ModelSerializer):
             "title",
             "description",
             "day",
-            "city",
+            "destination",
             "hotel",
             "food",
         )
@@ -54,3 +54,9 @@ class MultiCityTourSerializer(ModelSerializer):
     #     ]
     #     MultiCityTour.features.through.objects.bulk_update(tour_city_list)
     #     return instance
+
+
+class OneCityTourSerializer(ModelSerializer):
+    class Meta:
+        model = OneCityTour
+        fields = ("id", "title", "description", "start", "end", "destination", "hotel")

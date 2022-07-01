@@ -27,18 +27,21 @@ class Country(Location):
     continent = models.ForeignKey(
         Continent, related_name="countries", on_delete=models.CASCADE
     )
+    description = models.CharField(
+        _("Description"), max_length=512, null=True, blank=True
+    )
 
     class Meta(Location.Meta):
         verbose_name_plural = "Countries"
 
 
-class City(Location):
-    country = models.ForeignKey(
-        Country, related_name="cities", on_delete=models.CASCADE
-    )
+class Destination(Location):
     # TODO: in future remove null=true blank=true
     location = PointField(
         geography=True, default=Point(27.56, 53.9), null=True, blank=True
+    )
+    country = models.ForeignKey(
+        Country, related_name="cities", on_delete=models.CASCADE
     )
 
     @property
@@ -50,10 +53,17 @@ class City(Location):
         return self.location.y
 
     class Meta(Location.Meta):
-        verbose_name_plural = "Cities"
+        verbose_name_plural = "Destinations"
         constraints = [
-            models.UniqueConstraint(fields=["name", "country"], name="uq_city_country")
+            models.UniqueConstraint(
+                fields=["name", "country"], name="uq_city_destination"
+            )
         ]
+
+
+class City(Destination):
+    class Meta(Location.Meta):
+        verbose_name_plural = "Cities"
 
     def __str__(self):
         return f"{self.pk} {self.name}, {self.country.name}"

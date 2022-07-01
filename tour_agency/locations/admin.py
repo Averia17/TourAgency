@@ -1,7 +1,13 @@
 from django.contrib import admin
 from django.contrib.gis.admin import GISModelAdmin
 
-from locations.models import Country, City, Continent
+from images.admin import save_related_images, ImageInline
+from images.models import CountryImage
+from locations.models import Country, City, Continent, Destination
+
+
+class CountryImageInline(ImageInline):
+    model = CountryImage
 
 
 @admin.register(Continent)
@@ -20,6 +26,7 @@ class ContinentAdmin(admin.ModelAdmin):
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
+    inlines = [CountryImageInline]
     list_display = ["name"]
     search_fields = ["name"]
     readonly_fields = ["created", "modified"]
@@ -30,10 +37,16 @@ class CountryAdmin(admin.ModelAdmin):
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]
+    related_field = "tour"
+
+    def save_formset(self, request, form, formset, change, **kwargs):
+        if formset.model != CountryImage:
+            return super().save_formset(request, form, formset, change)
+        save_related_images(request, form, formset, self.related_field)
 
 
-@admin.register(City)
-class CityAdmin(GISModelAdmin):
+@admin.register(Destination)
+class DestinationAdmin(GISModelAdmin):
     list_display = ["name", "country"]
     list_filter = ["country"]
     search_fields = ["name"]
@@ -45,3 +58,6 @@ class CityAdmin(GISModelAdmin):
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]
+
+
+admin.site.register(City, DestinationAdmin)
