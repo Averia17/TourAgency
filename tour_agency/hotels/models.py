@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from core.constants import CONVENIENCES_TYPES
 from core.models import BaseModel
 from core.utils import one_day_hence
 from locations.models import StreetMixin
@@ -14,6 +15,9 @@ from users.models import User
 class Convenience(BaseModel):
     icon = models.OneToOneField("images.Image", on_delete=models.SET_NULL, null=True)
     name = models.CharField(_("Name"), unique=True, max_length=256)
+    type = models.CharField(
+        _("Type"), max_length=16, choices=CONVENIENCES_TYPES, default="HOTEL"
+    )
 
     def __str__(self):
         return self.name
@@ -96,7 +100,7 @@ class RoomReservation(Rent):
         if self.start > self.end:
             raise ValidationError("Start date cannot be bigger than end date")
         if not self.room.is_available(self.start, self.end):
-            raise ValidationError("Room is not available for this dates")
+            raise ValidationError("Room is not available for these dates")
 
     def save(self, *args, **kwargs):
         self.full_clean()

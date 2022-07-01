@@ -33,6 +33,9 @@ class ImageInline(admin.TabularInline):
     extra = 1
     form = ImageForm
 
+    def has_change_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):

@@ -43,6 +43,11 @@ class HotelAdmin(admin.ModelAdmin):
             return super().save_formset(request, form, formset, change)
         save_related_images(request, form, formset, self.related_field)
 
+    def get_field_queryset(self, db, db_field, request):
+        if db_field.name == "conveniences":
+            return db_field.remote_field.model._default_manager.filter(type="HOTEL")
+        super().get_field_queryset(db, db_field, request)
+
 
 @admin.register(RoomType)
 class RoomTypeAdmin(admin.ModelAdmin):
@@ -73,20 +78,26 @@ class RoomTypeAdmin(admin.ModelAdmin):
     related_field = "room"
 
     def save_formset(self, request, form, formset, change, **kwargs):
-        if formset.model != HotelImage:
+        if formset.model != RoomImage:
             return super().save_formset(request, form, formset, change)
         save_related_images(request, form, formset, self.related_field)
+
+    def get_field_queryset(self, db, db_field, request):
+        if db_field.name == "conveniences":
+            return db_field.remote_field.model._default_manager.filter(type="ROOM")
+        super().get_field_queryset(db, db_field, request)
 
 
 @admin.register(Convenience)
 class ConvenienceAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "icon"]
+    list_display = ["id", "name", "type"]
+    list_filter = ["type"]
     search_fields = ["name"]
     readonly_fields = ["created", "modified"]
     fieldsets = [
         (
             None,
-            {"fields": ["name", "icon"]},
+            {"fields": ["name", "icon", "type"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]

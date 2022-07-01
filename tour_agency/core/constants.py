@@ -12,4 +12,9 @@ MEALS = (
     ("DINNER", "Dinner"),
 )
 
+CONVENIENCES_TYPES = (
+    ("HOTEL", "Hotel"),
+    ("ROOM", "Room"),
+)
+
 CHECK_IN_TIME = "13:00:00"

@@ -1,4 +1,3 @@
-from django.utils import timezone
 from rest_framework.fields import CharField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
@@ -21,6 +20,7 @@ class ConvenienceSerializer(ModelSerializer):
 
 class RoomTypeSerializer(ModelSerializer):
     conveniences = ConvenienceSerializer(many=True)
+    images = ImageSerializer(many=True, required=False)
 
     class Meta:
         model = RoomType

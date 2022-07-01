@@ -37,7 +37,7 @@ class CountryAdmin(admin.ModelAdmin):
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]
-    related_field = "tour"
+    related_field = "country"
 
     def save_formset(self, request, form, formset, change, **kwargs):
         if formset.model != CountryImage:
