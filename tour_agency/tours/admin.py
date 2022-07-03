@@ -2,7 +2,13 @@ from django.contrib import admin
 
 from images.admin import save_related_images, ImageInline
 from images.models import MultiCityTourImage, OneCityTourImage
-from tours.models import MultiCityTour, OneCityTour, TourFeature
+from tours.models import (
+    MultiCityTour,
+    OneCityTour,
+    TourFeature,
+    MultiCityArrivalDate,
+    OneCityArrivalDate,
+)
 
 
 class MultiCityTourImageInline(ImageInline):
@@ -13,13 +19,23 @@ class OneCityTourImageInline(ImageInline):
     model = OneCityTourImage
 
 
+class MultiCityArrivalDateInline(admin.TabularInline):
+    model = MultiCityArrivalDate
+    extra = 1
+
+
+class OneCityArrivalDateInline(admin.TabularInline):
+    model = OneCityArrivalDate
+    extra = 1
+
+
 @admin.register(MultiCityTour)
 class MultiCityTourAdmin(admin.ModelAdmin):
-    inlines = [MultiCityTourImageInline]
+    inlines = [MultiCityTourImageInline, MultiCityArrivalDateInline]
     list_display = ["title", "tour_type", "price"]
     list_filter = ["tour_type"]
     search_fields = ["title"]
-    readonly_fields = ["created", "modified"]
+    readonly_fields = ["days", "nights", "created", "modified"]
     fieldsets = [
         (
             None,
@@ -27,9 +43,9 @@ class MultiCityTourAdmin(admin.ModelAdmin):
                 "fields": [
                     "title",
                     "description",
+                    "days",
+                    "nights",
                     "tour_type",
-                    "start",
-                    "end",
                     "price",
                 ]
             },
@@ -46,11 +62,11 @@ class MultiCityTourAdmin(admin.ModelAdmin):
 
 @admin.register(OneCityTour)
 class OneCityTourAdmin(admin.ModelAdmin):
-    inlines = [OneCityTourImageInline]
+    inlines = [OneCityTourImageInline, OneCityArrivalDateInline]
     list_display = ["title"]
     list_filter = ["destination"]
     search_fields = ["title"]
-    readonly_fields = ["created", "modified"]
+    readonly_fields = ["nights", "created", "modified"]
     fieldsets = [
         (
             None,
@@ -58,10 +74,10 @@ class OneCityTourAdmin(admin.ModelAdmin):
                 "fields": [
                     "title",
                     "description",
-                    "start",
-                    "end",
                     "destination",
                     "hotel",
+                    "days",
+                    "nights",
                 ]
             },
         ),
