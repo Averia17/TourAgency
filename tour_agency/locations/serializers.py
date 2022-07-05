@@ -27,4 +27,5 @@ class ContinentDetailSerializer(ModelSerializer):
     countries = CountrySerializer(many=True)
 
     class Meta:
+        model = Continent
         fields = ("id", "name", "countries")
