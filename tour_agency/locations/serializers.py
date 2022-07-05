@@ -23,14 +23,8 @@ class CountrySerializer(ModelSerializer):
         fields = ("id", "name", "images")
 
 
-class ContinentSerializer(ModelSerializer):
-    class Meta:
-        model = Continent
-        fields = ("id", "name")
-
-
-class ContinentDetailSerializer(ContinentSerializer):
+class ContinentDetailSerializer(ModelSerializer):
     countries = CountrySerializer(many=True)
 
-    class Meta(ContinentSerializer.Meta):
-        fields = ContinentSerializer.Meta.fields + ("countries",)
+    class Meta:
+        fields = ("id", "name", "countries")
