@@ -1,11 +1,14 @@
-from rest_framework.mixins import RetrieveModelMixin
+from django.db.models import Prefetch
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from core.utils import string_to_datetime
 from hotels.models import Hotel, RoomType
 from hotels.serializers import (
     HotelSerializer,
     HotelDetailSerializer,
     RoomDetailSerializer,
+    RoomTypeSerializer,
 )
 
 
@@ -27,6 +30,12 @@ class HotelsViewSet(ModelViewSet):
         serializer.save(images=self.request.FILES.getlist("images"))
 
 
-class RoomViewSet(RetrieveModelMixin, GenericViewSet):
+class RoomViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     queryset = RoomType.objects.all()
-    serializer_class = RoomDetailSerializer
+    serializer_class = RoomTypeSerializer
+    serializer_classes = {
+        "retrieve": RoomDetailSerializer,
+    }
+
+    def get_serializer_class(self):
+        return self.serializer_classes.get(self.action, self.serializer_class)

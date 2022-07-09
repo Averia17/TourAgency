@@ -5,9 +5,11 @@ from locations.models import City, Continent, Country, Destination
 
 
 class DestinationSerializer(ModelSerializer):
+    image = ImageSerializer()
+
     class Meta:
         model = Destination
-        fields = ("id", "name", "longitude", "latitude")
+        fields = ("id", "name", "longitude", "latitude", "image", "description")
 
 
 class CitySerializer(DestinationSerializer):

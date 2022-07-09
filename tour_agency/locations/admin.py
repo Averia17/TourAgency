@@ -54,7 +54,17 @@ class DestinationAdmin(GISModelAdmin):
     fieldsets = [
         (
             None,
-            {"fields": ["name", "country", "longitude", "latitude", "location"]},
+            {
+                "fields": [
+                    "name",
+                    "country",
+                    "longitude",
+                    "latitude",
+                    "location",
+                    "image",
+                    "description",
+                ]
+            },
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]
