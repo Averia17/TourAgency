@@ -79,6 +79,7 @@ class RoomType(BaseModel):
         ]
 
 
+# TODO: add related_name
 class Rent(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -102,12 +103,11 @@ class RoomReservation(Rent):
         if not self.room.is_available(self.start, self.end):
             raise ValidationError("Room is not available for these dates")
 
-    def save(self, *args, **kwargs):
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
         self.full_clean()
-        return super().save(self, *args, **kwargs)
-
-    def is_range_already_reserved(self, start, end):
-        return self.objects.filter(end__gte=start, start__lte=end).exists()
+        return super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
         app_label = "hotels"

@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
@@ -28,6 +29,16 @@ class MultiCityArrivalDate(ArrivalDates):
     class Meta(ArrivalDates.Meta):
         verbose_name_plural = "MultiCityArrivalDates"
 
+    def clean(self):
+        if self.discount > self.tour.min_price:
+            raise ValidationError("Discount cannot be bigger than tour minimal price")
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        self.full_clean()
+        return super().save(force_insert, force_update, using, update_fields)
+
 
 class OneCityArrivalDate(ArrivalDates):
     tour = models.ForeignKey(
@@ -43,6 +54,11 @@ class Tour(models.Model):
     description = models.CharField(
         _("Description"), max_length=512, null=True, blank=True
     )
+    price = models.DecimalField(_("Price"), max_digits=10, decimal_places=2)
+
+    @property
+    def min_price(self):
+        return self.price
 
     class Meta:
         app_label = "tours"
@@ -71,24 +87,21 @@ class OneCityTour(BaseModel, Tour):
 
 class MultiCityTour(BaseModel, Tour):
     tour_type = models.CharField(max_length=10, choices=TOUR_TYPES, default="LAND")
-    price = models.DecimalField(_("Price"), max_digits=10, decimal_places=2)
-
-    @property
-    def last_day(self):
-        return self.tour_features.order_by("-day").first()
 
     @property
     def days(self):
-        return self.last_day.day if self.last_day else 0
+        return self.tour_features.latest().day
 
     @property
-    def nights(self):
-        nights = 0
-        if self.last_day:
-            nights = self.days - 1
-            if self.last_day.hotel:
-                nights = self.days
-        return nights
+    def min_price(self):
+        hotel_price = 0
+        for feature in self.tour_features.filter(hotel__isnull=False).select_related(
+            "hotel"
+        ):
+            hotel_price += (
+                feature.hotel.room_types.order_by("cost_per_day").first().cost_per_day
+            )
+        return self.price + hotel_price
 
     class Meta(Tour.Meta):
         verbose_name_plural = "MultiCityTours"
@@ -120,6 +133,7 @@ class TourFeature(BaseModel):
     class Meta(Tour.Meta):
         app_label = "tours"
         verbose_name_plural = "TourFeature"
+        get_latest_by = ["day", "pk"]
         ordering = ["tour", "day"]
 
     def __str__(self):

@@ -35,7 +35,7 @@ class MultiCityTourAdmin(admin.ModelAdmin):
     list_display = ["title", "tour_type", "price"]
     list_filter = ["tour_type"]
     search_fields = ["title"]
-    readonly_fields = ["days", "nights", "created", "modified"]
+    readonly_fields = ["days", "created", "modified"]
     fieldsets = [
         (
             None,
@@ -44,7 +44,6 @@ class MultiCityTourAdmin(admin.ModelAdmin):
                     "title",
                     "description",
                     "days",
-                    "nights",
                     "tour_type",
                     "price",
                 ]

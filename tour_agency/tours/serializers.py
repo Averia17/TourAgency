@@ -1,4 +1,4 @@
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from core.constants import MEALS
@@ -18,10 +18,7 @@ from tours.models import (
 class MultiCityArrivalDatesSerializer(ModelSerializer):
     class Meta:
         model = MultiCityArrivalDate
-        fields = ("date",)
-
-    def to_representation(self, instance):
-        return super().to_representation(instance)["date"]
+        fields = ("date", "discount")
 
 
 class OneCityArrivalDatesSerializer(MultiCityArrivalDatesSerializer):
@@ -85,13 +82,11 @@ class MultiCityTourDetailSerializer(ModelSerializer):
         fields = (
             "id",
             "title",
-            "price",
+            "min_price",
             "arrival_dates",
             "images",
             "tour_type",
             "days",
-            "nights",
-            "tour_type",
             "features",
             "description",
         )

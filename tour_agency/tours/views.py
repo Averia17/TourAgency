@@ -11,7 +11,9 @@ from tours.serializers import (
 
 
 class MultiCityTourViewSet(ModelViewSet):
-    queryset = MultiCityTour.objects.all()
+    queryset = MultiCityTour.objects.all().prefetch_related(
+        "tour_features", "arrival_dates", "images"
+    )
     serializer_class = MultiCityTourSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TourFilter

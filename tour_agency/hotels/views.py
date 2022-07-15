@@ -23,6 +23,16 @@ class HotelsViewSet(ModelViewSet):
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
 
+    #
+    # def retrieve(self, request, *args, **kwargs):
+    #     start_date = self.request.query_params.get("start", None)
+    #     end_date = self.request.query_params.get("end", None)
+    #     hotel = super().get_object()
+    #     hotel.prefetch_related(
+    #         Prefetch("room_types", queryset=RoomType.objects.filter(is_available=True))
+    #     )
+    #     super(HotelsViewSet, self).retrieve(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         serializer.save(images=self.request.FILES.getlist("images"))
 
@@ -39,3 +49,13 @@ class RoomViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
+
+    #
+    # def filter_queryset(self, queryset):
+    #     queryset = super().filter_queryset(queryset)
+    #     start_date = self.request.query_params.get("start", None)
+    #     end_date = self.request.query_params.get("end", None)
+    #     if start_date and end_date:
+    #         result["is_available"] = instance.is_available(
+    #             string_to_datetime(start_date), string_to_datetime(end_date)
+    #         )
