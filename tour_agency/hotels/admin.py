@@ -65,7 +65,6 @@ class RoomTypeAdmin(admin.ModelAdmin):
                     "hotel",
                     "cost_per_day",
                     "count_places",
-                    "count_rooms",
                     "square",
                     "is_family",
                     "description",

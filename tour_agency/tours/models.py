@@ -98,9 +98,10 @@ class MultiCityTour(BaseModel, Tour):
         for feature in self.tour_features.filter(hotel__isnull=False).select_related(
             "hotel"
         ):
-            hotel_price += (
-                feature.hotel.room_types.order_by("cost_per_day").first().cost_per_day
-            )
+            room = feature.hotel.room_types.order_by("cost_per_day").first()
+            if room:
+                hotel_price += room.cost_per_day
+
         return self.price + hotel_price
 
     class Meta(Tour.Meta):

@@ -48,7 +48,7 @@ class Hotel(BaseModel, StreetMixin):
 
 
 class RoomType(BaseModel):
-    name = models.CharField(_("Name"), unique=True, max_length=32)
+    name = models.CharField(_("Name"), max_length=32)
     hotel = models.ForeignKey(
         Hotel, related_name="room_types", on_delete=models.CASCADE
     )
@@ -62,7 +62,6 @@ class RoomType(BaseModel):
     )
     square = models.FloatField(_("Square"))
     conveniences = models.ManyToManyField(Convenience, related_name="rooms", blank=True)
-    count_rooms = models.PositiveSmallIntegerField(_("Count rooms"))
 
     def __str__(self):
         return f"{self.name}: {self.hotel}"
