@@ -7,14 +7,14 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from hotels.views import HotelsViewSet, RoomViewSet
 from locations.views import ContinentViewSet
 from tour_agency import settings
-from tours.views import MultiCityTourViewSet
+from tours.views import TourViewSet
 from users.views import UserViewSet, CustomTokenObtainPairView
 
 router = SimpleRouter()
 router.register("users", UserViewSet)
 router.register("hotels", HotelsViewSet)
 router.register("rooms", RoomViewSet)
-router.register("tours", MultiCityTourViewSet)
+router.register("tours", TourViewSet)
 router.register("continents", ContinentViewSet)
 
 urlpatterns = [
@@ -22,6 +22,7 @@ urlpatterns = [
     path("login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("refresh-token/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token-verify/", TokenVerifyView.as_view(), name="token-verify"),
-    path("__debug__/", include("debug_toolbar.urls")),
     path("api/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]

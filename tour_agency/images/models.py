@@ -5,7 +5,7 @@ from core.models import BaseModel
 from core.utils import delete_image
 from hotels.models import Hotel, RoomType
 from locations.models import Country
-from tours.models import MultiCityTour, OneCityTour
+from tours.models import Tour
 from users.models import User
 
 from images.AWS import settings
@@ -64,22 +64,11 @@ class RoomImage(Image):
         verbose_name_plural = "RoomImages"
 
 
-class MultiCityTourImage(Image):
-    tour = models.ForeignKey(
-        MultiCityTour, on_delete=models.CASCADE, related_name="images"
-    )
+class TourImage(Image):
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="images")
 
     class Meta(Image.Meta):
-        verbose_name_plural = "MultiCityTourImages"
-
-
-class OneCityTourImage(Image):
-    tour = models.ForeignKey(
-        OneCityTour, on_delete=models.CASCADE, related_name="images"
-    )
-
-    class Meta(Image.Meta):
-        verbose_name_plural = "OneCityTourImages"
+        verbose_name_plural = "TourImages"
 
 
 class CountryImage(Image):

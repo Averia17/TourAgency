@@ -3,14 +3,7 @@ from collections import OrderedDict
 from django.contrib import admin, messages
 from django import forms
 from django.core.exceptions import ValidationError
-from images.models import (
-    Image,
-    HotelImage,
-    RoomImage,
-    CountryImage,
-    MultiCityTourImage,
-    OneCityTourImage,
-)
+from images.models import Image, HotelImage, RoomImage, CountryImage, TourImage
 
 from images.services import FileStandardUploadService
 
@@ -91,26 +84,22 @@ class ImageAdmin(admin.ModelAdmin):
         return super().has_change_permission(request, obj=obj) if not obj else False
 
 
-@admin.register(HotelImage)
-class HotelImageAdmin(ImageAdmin):
-    additional_fields = ["hotel"]
-
-
-@admin.register(RoomImage)
-class RoomImageAdmin(ImageAdmin):
-    additional_fields = ["room"]
-
-
-@admin.register(MultiCityTourImage)
-class MultyCityTourAdmin(ImageAdmin):
-    additional_fields = ["tour"]
-
-
-@admin.register(OneCityTourImage)
-class OneCityTourAdmin(ImageAdmin):
-    additional_fields = ["tour"]
-
-
-@admin.register(CountryImage)
-class CountryImageAdmin(ImageAdmin):
-    additional_fields = ["country"]
+#
+# @admin.register(HotelImage)
+# class HotelImageAdmin(ImageAdmin):
+#     additional_fields = ["hotel"]
+#
+#
+# @admin.register(RoomImage)
+# class RoomImageAdmin(ImageAdmin):
+#     additional_fields = ["room"]
+#
+#
+# @admin.register(TourImage)
+# class TourAdmin(ImageAdmin):
+#     additional_fields = ["tour"]
+#
+#
+# @admin.register(CountryImage)
+# class CountryImageAdmin(ImageAdmin):
+#     additional_fields = ["country"]

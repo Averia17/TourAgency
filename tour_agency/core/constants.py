@@ -1,5 +1,6 @@
 TOUR_TYPES = (
     ("LAND", "Land Tour"),
+    ("ONE_DESTINATION", "One Destination Journey"),
     ("RIVER", "River Cruises"),
     ("SMALL_SHIP", "Small Ship Cruises"),
     ("FAMILY", "Family Journeys"),

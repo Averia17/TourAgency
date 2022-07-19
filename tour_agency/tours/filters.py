@@ -1,7 +1,7 @@
 from django_filters import rest_framework as filters, Filter
 
 from core.constants import TOUR_TYPES
-from tours.models import MultiCityTour
+from tours.models import Tour
 
 
 class ListFilter(Filter):
@@ -33,5 +33,5 @@ class TourFilter(filters.FilterSet):
     tour_type = filters.ChoiceFilter(field_name="tour_type", choices=TOUR_TYPES)
 
     class Meta:
-        model = MultiCityTour
+        model = Tour
         fields = ["tour_type"]
