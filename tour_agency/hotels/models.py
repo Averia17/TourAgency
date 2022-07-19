@@ -33,7 +33,7 @@ class Hotel(BaseModel, StreetMixin):
         _("Number of stars"), validators=[MaxValueValidator(5), MinValueValidator(1)]
     )
     description = models.CharField(
-        _("Description"), max_length=512, null=True, blank=True
+        _("Description"), max_length=1024, null=True, blank=True
     )
     conveniences = models.ManyToManyField(
         Convenience, related_name="hotels", blank=True

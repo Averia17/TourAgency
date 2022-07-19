@@ -8,7 +8,6 @@ def set_tour_features_order(apps, schema_editor):
     TourFeature = apps.get_model("tours", "TourFeature")
     features = []
     for tour in Tour.objects.all().prefetch_related("tour_features"):
-        print(tour)
         for index, feature in enumerate(tour.tour_features.all(), start=1):
             feature.order = index
             features.append(feature)

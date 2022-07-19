@@ -25,7 +25,8 @@ class TourFeatureSerializer(ModelSerializer):
         fields = (
             "title",
             "description",
-            "day",
+            "days",
+            "order",
             "destination",
             "hotel",
             "food",

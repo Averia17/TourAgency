@@ -68,7 +68,7 @@ class Tour(BaseModel):
 class TourFeature(BaseModel):
     title = models.CharField(_("Title"), max_length=256)
     description = models.CharField(
-        _("Description"), max_length=512, null=True, blank=True
+        _("Description"), max_length=1024, null=True, blank=True
     )
     order = models.PositiveSmallIntegerField(default=1)
     days = models.PositiveSmallIntegerField(default=1)
