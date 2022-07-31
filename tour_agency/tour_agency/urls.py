@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from hotels.views import HotelsViewSet, RoomViewSet
 from locations.views import ContinentViewSet
 from tour_agency import settings
-from tours.views import TourViewSet
+from tours.views import TourViewSet, ArrivalDateViewSet
 from users.views import UserViewSet, CustomTokenObtainPairView
 
 router = SimpleRouter()
@@ -16,6 +16,7 @@ router.register("hotels", HotelsViewSet)
 router.register("rooms", RoomViewSet)
 router.register("tours", TourViewSet)
 router.register("continents", ContinentViewSet)
+router.register("arrivals", ArrivalDateViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

@@ -1,12 +1,21 @@
+import datetime
+
+from django.db.models import Prefetch
 from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from core.constants import MEALS
 from core.serializer_fields import ChoiceArrayField
-from hotels.serializers import SimpleHotelSerializer
+from hotels.models import RoomType
+from hotels.serializers import (
+    SimpleHotelSerializer,
+    HotelDetailSerializer,
+    RoomTypeSerializer,
+)
 from images.serializers import ImageSerializer
 from locations.serializers import DestinationSerializer
 from tours.models import TourFeature, ArrivalDates, Tour
+from tours.services import get_tour_available_rooms
 
 
 class ArrivalDatesSerializer(ModelSerializer):
@@ -33,13 +42,20 @@ class TourFeatureSerializer(ModelSerializer):
         )
 
 
+class TourFeatureDetailSerializer(TourFeatureSerializer):
+    hotel = HotelDetailSerializer()
+
+    class Meta(TourFeatureSerializer.Meta):
+        pass
+
+
 class TourSerializer(ModelSerializer):
     images = ImageSerializer(many=True, required=False)
     tour_type = CharField(source="get_tour_type_display")
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "price", "images", "tour_type", "days")
+        fields = ("id", "title", "min_price", "images", "tour_type", "days")
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
@@ -69,14 +85,47 @@ class TourDetailSerializer(ModelSerializer):
     arrival_dates = ArrivalDatesSerializer(many=True)
 
     class Meta(TourSerializer.Meta):
-        fields = (
-            "id",
-            "title",
-            "min_price",
+        fields = TourSerializer.Meta.fields + (
             "arrival_dates",
-            "images",
-            "tour_type",
             "days",
             "features",
             "description",
         )
+
+
+class TourDetailRoomsSerializer(TourSerializer):
+    features = TourFeatureDetailSerializer(source="tour_features", many=True)
+
+    class Meta(TourSerializer.Meta):
+        fields = TourSerializer.Meta.fields + (
+            "arrival_dates",
+            "days",
+            "features",
+            "description",
+        )
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        start = self.context.get("start")
+        params = self.context.get("request").query_params
+        rooms = get_tour_available_rooms(
+            instance.tour_features.all().select_related("hotel"), start, params
+        )
+        for feature in result.get("features"):
+            hotel = feature["hotel"]
+            if hotel:
+                hotel["room_types"] = rooms.get(hotel["id"])
+        return result
+
+
+class ArrivalDatesDetailSerializer(ArrivalDatesSerializer):
+    tour = SerializerMethodField()
+
+    class Meta(ArrivalDatesSerializer.Meta):
+        fields = ArrivalDatesSerializer.Meta.fields + ("tour",)
+
+    def get_tour(self, obj):
+        return TourDetailRoomsSerializer(
+            obj.tour,
+            context={"start": obj.date, "request": self.context.get("request")},
+        ).data

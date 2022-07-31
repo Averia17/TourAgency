@@ -29,14 +29,16 @@ class RoomTypeSerializer(ModelSerializer):
             "name",
             "cost_per_day",
             "count_places",
+            "is_family",
             "conveniences",
             "images",
         )
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
-        start_date = self.context["request"].query_params.get("start", None)
-        end_date = self.context["request"].query_params.get("end", None)
+        request = self.context.get("request")
+        start_date = request.query_params.get("start", None) if request else None
+        end_date = request.query_params.get("end", None) if request else None
         if start_date and end_date:
             result["is_available"] = instance.is_available(
                 string_to_datetime(start_date), string_to_datetime(end_date)
@@ -114,4 +116,7 @@ class HotelDetailSerializer(HotelSerializer):
     room_types = RoomTypeSerializer(many=True)
 
     class Meta(HotelSerializer.Meta):
-        fields = HotelSerializer.Meta.fields + ("room_types", "street", "description")
+        fields = HotelSerializer.Meta.fields + (
+            "room_types",
+            "description",
+        )

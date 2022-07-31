@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Count, F, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -39,6 +40,21 @@ class Hotel(BaseModel, StreetMixin):
         Convenience, related_name="hotels", blank=True
     )
 
+    def available_rooms(self, start, end, params: dict):
+        rooms = (
+            self.room_types.annotate(
+                reserved_dates=Count(
+                    "rented_dates",
+                    filter=Q(
+                        rented_dates__end__gte=start, rented_dates__start__lte=end
+                    ),
+                )
+            )
+            .filter(count_rooms__gt=F("reserved_dates"))
+            .order_by("cost_per_day")
+        )
+        return rooms
+
     def __str__(self):
         return f"{self.name}: {self.get_full_name()}"
 
@@ -53,6 +69,7 @@ class RoomType(BaseModel):
         Hotel, related_name="room_types", on_delete=models.CASCADE
     )
     count_places = models.PositiveSmallIntegerField(_("Count places"), default=2)
+    count_rooms = models.PositiveSmallIntegerField(_("Count rooms"), default=10)
     is_family = models.BooleanField(_("Is family"), default=False)
     cost_per_day = models.DecimalField(
         _("Cost per day"), max_digits=10, decimal_places=2
@@ -68,11 +85,12 @@ class RoomType(BaseModel):
 
     def is_available(self, start, end):
         reserved_dates = self.rented_dates.filter(end__gte=start, start__lte=end)
-        return self.count_places > reserved_dates.count()
+        return self.count_rooms > reserved_dates.count()
 
     class Meta:
         app_label = "hotels"
         verbose_name_plural = "Rooms"
+        ordering = ["cost_per_day"]
         constraints = [
             models.UniqueConstraint(fields=["name", "hotel"], name="uq_name_hotel")
         ]

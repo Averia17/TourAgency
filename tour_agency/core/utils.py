@@ -19,9 +19,15 @@ def delete_image(image):
 def string_to_list(string):
     if not isinstance(string, str):
         return string
+    if len(string) == 1:
+        string = str([string])
     return ast.literal_eval(string)
 
 
 def string_to_datetime(date):
     date = f"{date} {CHECK_IN_TIME}"
     return make_aware(parse_datetime(date))
+
+
+def true(value: str) -> bool:
+    return value in [True, "true", "True", "1"]

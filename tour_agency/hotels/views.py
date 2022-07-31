@@ -2,7 +2,7 @@ from django.db.models import Prefetch
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from core.utils import string_to_datetime
+from core.utils import string_to_list, true
 from hotels.models import Hotel, RoomType
 from hotels.serializers import (
     HotelSerializer,
@@ -10,11 +10,13 @@ from hotels.serializers import (
     RoomDetailSerializer,
     RoomTypeSerializer,
 )
+from hotels.services import filter_rooms
 
 
 class HotelsViewSet(ModelViewSet):
     queryset = Hotel.objects.all()
-    serializer_class = HotelSerializer
+    serializer_class = HotelDetailSerializer
+    # serializer_class = HotelSerializer
 
     serializer_classes = {
         "retrieve": HotelDetailSerializer,
@@ -22,6 +24,20 @@ class HotelsViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
+
+    def filter_queryset(self, queryset):
+        params = self.request.query_params
+        if "ids" in params:
+            queryset = queryset.filter(pk__in=string_to_list(params.get("ids")))
+
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                "room_types",
+                queryset=filter_rooms(params),
+            )
+        )
+
+        return queryset
 
     #
     # def retrieve(self, request, *args, **kwargs):

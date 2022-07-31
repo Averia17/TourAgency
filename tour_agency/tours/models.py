@@ -1,13 +1,10 @@
-from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Max
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import TOUR_TYPES, MEALS
 from core.models import BaseModel, ChoiceArrayField
-from core.utils import one_day_hence
 from hotels.models import Hotel
 from locations.models import City, Destination
 
@@ -57,6 +54,10 @@ class Tour(BaseModel):
                 hotel_price += room.cost_per_day
 
         return self.price + hotel_price
+
+    @property
+    def hotels(self):
+        return Hotel.objects.filter(tour_features__in=self.tour_features)
 
     class Meta:
         app_label = "tours"
