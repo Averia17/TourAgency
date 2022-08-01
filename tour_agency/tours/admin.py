@@ -2,16 +2,12 @@ from django.contrib import admin
 
 from images.admin import save_related_images, ImageInline
 from images.models import TourImage
-from tours.models import Tour, TourFeature, ArrivalDates
+from tours.arrival_dates.admin import ArrivalDateInline
+from tours.models import Tour, TourFeature
 
 
 class TourImageInline(ImageInline):
     model = TourImage
-
-
-class ArrivalDateInline(admin.TabularInline):
-    model = ArrivalDates
-    extra = 1
 
 
 @admin.register(Tour)
@@ -59,7 +55,6 @@ class TourFeatureAdmin(admin.ModelAdmin):
                     "description",
                     "tour",
                     "days",
-                    "order",
                     "destination",
                     "hotel",
                     "food",

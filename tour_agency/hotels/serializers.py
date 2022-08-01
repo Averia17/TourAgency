@@ -1,9 +1,10 @@
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from core.utils import string_to_list, string_to_datetime
 from hotels.models import Hotel, RoomType, Convenience
+from hotels.services import filter_rooms
 from images.models import HotelImage
 from images.serializers import ImageSerializer
 from images.services import FileStandardUploadService
@@ -113,10 +114,21 @@ class HotelSerializer(ModelSerializer):
 
 
 class HotelDetailSerializer(HotelSerializer):
-    room_types = RoomTypeSerializer(many=True)
+    room_types = SerializerMethodField()
 
     class Meta(HotelSerializer.Meta):
         fields = HotelSerializer.Meta.fields + (
             "room_types",
             "description",
         )
+
+    def get_room_types(self, obj):
+        start = self.context.get("start")
+        end = self.context.get("end")
+        rooms = obj.room_types.all()
+        if start and end:
+            rooms = obj.available_rooms(start, end)
+        filter_params = self.context.get("filter_params")
+        if filter_params:
+            rooms = filter_rooms(filter_params, rooms)
+        return RoomTypeSerializer(rooms, many=True).data

@@ -7,7 +7,8 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from hotels.views import HotelsViewSet, RoomViewSet
 from locations.views import ContinentViewSet
 from tour_agency import settings
-from tours.views import TourViewSet, ArrivalDateViewSet
+from tours.arrival_dates.views import ArrivalDateViewSet
+from tours.views import TourViewSet
 from users.views import UserViewSet, CustomTokenObtainPairView
 
 router = SimpleRouter()

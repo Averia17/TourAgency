@@ -1,34 +1,11 @@
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
+from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import TOUR_TYPES, MEALS
 from core.models import BaseModel, ChoiceArrayField
 from hotels.models import Hotel
 from locations.models import City, Destination
-
-
-class ArrivalDates(models.Model):
-    date = models.DateTimeField(_("Arrival date"), default=timezone.now)
-    discount = models.PositiveSmallIntegerField(default=0)
-    tour = models.ForeignKey(
-        "Tour", on_delete=models.CASCADE, related_name="arrival_dates"
-    )
-
-    class Meta:
-        app_label = "tours"
-        verbose_name_plural = "ArrivalDates"
-
-    def clean(self):
-        if self.discount > self.tour.min_price:
-            raise ValidationError("Discount cannot be bigger than tour minimal price")
-
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        self.full_clean()
-        return super().save(force_insert, force_update, using, update_fields)
 
 
 class Tour(BaseModel):
@@ -41,7 +18,7 @@ class Tour(BaseModel):
 
     @property
     def days(self):
-        return self.tour_features.latest().day
+        return self.tour_features.aggregate(Sum("days"))["days__sum"]
 
     @property
     def min_price(self):
@@ -57,7 +34,7 @@ class Tour(BaseModel):
 
     @property
     def hotels(self):
-        return Hotel.objects.filter(tour_features__in=self.tour_features)
+        return Hotel.objects.filter(tour_features__in=self.tour_features.all())
 
     class Meta:
         app_label = "tours"
@@ -71,7 +48,6 @@ class TourFeature(BaseModel):
     description = models.CharField(
         _("Description"), max_length=1024, null=True, blank=True
     )
-    order = models.PositiveSmallIntegerField(default=1)
     days = models.PositiveSmallIntegerField(default=1)
     food = ChoiceArrayField(
         base_field=models.CharField(max_length=10, choices=MEALS, default="BREAKFAST")
@@ -90,14 +66,23 @@ class TourFeature(BaseModel):
         Tour, related_name="tour_features", on_delete=models.CASCADE
     )
 
+    @property
+    def start(self):
+        try:
+            previous = self.get_previous_in_order()
+            start = previous.end
+        except self.DoesNotExist:
+            start = 0
+        return start + 1
+
+    @property
+    def end(self):
+        return self.start + self.days
+
     class Meta(Tour.Meta):
         app_label = "tours"
         verbose_name_plural = "TourFeature"
-        get_latest_by = ["order"]
-        ordering = ["tour", "order"]
-        constraints = [
-            models.UniqueConstraint(fields=["tour", "order"], name="uq_tour_order")
-        ]
+        order_with_respect_to = "tour"
 
     def __str__(self):
         return f"{self.days}: {self.title}"

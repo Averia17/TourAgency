@@ -40,7 +40,7 @@ class Hotel(BaseModel, StreetMixin):
         Convenience, related_name="hotels", blank=True
     )
 
-    def available_rooms(self, start, end, params: dict):
+    def available_rooms(self, start, end):
         rooms = (
             self.room_types.annotate(
                 reserved_dates=Count(
@@ -56,7 +56,7 @@ class Hotel(BaseModel, StreetMixin):
         return rooms
 
     def __str__(self):
-        return f"{self.name}: {self.get_full_name()}"
+        return f"{self.name}"
 
     class Meta(StreetMixin.Meta):
         app_label = "hotels"
