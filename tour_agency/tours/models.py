@@ -75,10 +75,6 @@ class TourFeature(BaseModel):
             start = 0
         return start + 1
 
-    @property
-    def end(self):
-        return self.start + self.days
-
     class Meta(Tour.Meta):
         app_label = "tours"
         verbose_name_plural = "TourFeature"
