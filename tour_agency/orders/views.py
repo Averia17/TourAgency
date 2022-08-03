@@ -8,3 +8,6 @@ from orders.serializers import OrderSerializer
 class OrderViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    #
+    # def get_queryset(self):
+    #     return super().get_queryset().filter(user=self.request.user)

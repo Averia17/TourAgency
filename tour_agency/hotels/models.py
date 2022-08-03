@@ -13,7 +13,9 @@ from users.models import User
 
 
 class Convenience(BaseModel):
-    icon = models.OneToOneField("images.Image", on_delete=models.SET_NULL, null=True)
+    icon = models.OneToOneField(
+        "images.Image", on_delete=models.SET_NULL, blank=True, null=True
+    )
     name = models.CharField(_("Name"), unique=True, max_length=256)
     type = models.CharField(
         _("Type"), max_length=16, choices=CONVENIENCES_TYPES, default="HOTEL"

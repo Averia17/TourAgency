@@ -20,6 +20,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(OrderRoom)
 class OrderRoomAdmin(admin.ModelAdmin):
     list_display = ["order", "reservation"]
+    list_filter = ["order"]
     readonly_fields = ["created", "modified"]
     fieldsets = [
         (

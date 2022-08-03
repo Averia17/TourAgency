@@ -60,9 +60,11 @@ class RoomDetailSerializer(RoomTypeSerializer):
 
 # TODO: search better way to create serializer with {id: "", name: ""}
 class SimpleHotelSerializer(ModelSerializer):
+    image = ImageSerializer(source="images.first")
+
     class Meta:
         model = Hotel
-        fields = ("id", "name")
+        fields = ("id", "name", "image")
 
 
 class HotelSerializer(ModelSerializer):

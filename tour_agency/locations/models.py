@@ -43,7 +43,9 @@ class Destination(Location):
     country = models.ForeignKey(
         Country, related_name="cities", on_delete=models.CASCADE
     )
-    image = models.OneToOneField("images.Image", on_delete=models.SET_NULL, null=True)
+    image = models.OneToOneField(
+        "images.Image", on_delete=models.SET_NULL, blank=True, null=True
+    )
     description = models.CharField(
         _("Description"), max_length=512, null=True, blank=True
     )
