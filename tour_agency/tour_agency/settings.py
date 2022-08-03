@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "locations",
     "tours",
     "images",
+    "orders",
 ]
 
 MIDDLEWARE = [

@@ -9,7 +9,6 @@ from core.constants import CONVENIENCES_TYPES
 from core.models import BaseModel
 from core.utils import one_day_hence
 from locations.models import StreetMixin
-
 from users.models import User
 
 
@@ -81,7 +80,7 @@ class RoomType(BaseModel):
     conveniences = models.ManyToManyField(Convenience, related_name="rooms", blank=True)
 
     def __str__(self):
-        return f"{self.name}: {self.hotel}"
+        return f"{self.pk} {self.name}: {self.hotel}"
 
     def is_available(self, start, end):
         reserved_dates = self.rented_dates.filter(end__gte=start, start__lte=end)

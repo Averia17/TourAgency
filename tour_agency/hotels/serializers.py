@@ -1,14 +1,15 @@
-from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.fields import CharField, SerializerMethodField, CurrentUserDefault
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from core.utils import string_to_list, string_to_datetime
-from hotels.models import Hotel, RoomType, Convenience
+from hotels.models import Hotel, RoomType, Convenience, RoomReservation
 from hotels.services import filter_rooms
 from images.models import HotelImage
 from images.serializers import ImageSerializer
 from images.services import FileStandardUploadService
 from locations.serializers import CitySerializer
+from users.models import User
 
 
 class ConvenienceSerializer(ModelSerializer):
@@ -132,3 +133,13 @@ class HotelDetailSerializer(HotelSerializer):
         if filter_params:
             rooms = filter_rooms(filter_params, rooms)
         return RoomTypeSerializer(rooms, many=True).data
+
+
+class RoomReservationSerializer(HotelSerializer):
+    user = PrimaryKeyRelatedField(
+        queryset=User.objects.all(), default=CurrentUserDefault()
+    )
+
+    class Meta:
+        model = RoomReservation
+        fields = ("user", "start", "end", "room")

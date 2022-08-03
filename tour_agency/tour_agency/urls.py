@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from hotels.views import HotelsViewSet, RoomViewSet
 from locations.views import ContinentViewSet
+from orders.views import OrderViewSet
 from tour_agency import settings
 from tours.arrival_dates.views import ArrivalDateViewSet
 from tours.views import TourViewSet
@@ -18,6 +19,7 @@ router.register("rooms", RoomViewSet)
 router.register("tours", TourViewSet)
 router.register("continents", ContinentViewSet)
 router.register("arrivals", ArrivalDateViewSet)
+router.register("orders", OrderViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
