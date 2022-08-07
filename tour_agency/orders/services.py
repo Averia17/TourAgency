@@ -2,7 +2,7 @@ from hotels.models import RoomReservation
 from orders.models import OrderRoom
 
 
-def order_rooms(order, room_to_order: list, user):
+def book_rooms(order, room_to_order: list, user):
     # create rooms reservations
     reservations = [
         RoomReservation.objects.create(
@@ -18,3 +18,15 @@ def order_rooms(order, room_to_order: list, user):
         OrderRoom(order=order, reservation=reservation) for reservation in reservations
     ]
     return OrderRoom.objects.bulk_create(ordered_rooms)
+
+
+def get_order_price(arrival_date, count_persons, order_rooms):
+    price = (arrival_date.tour.price - arrival_date.discount) * count_persons
+
+    price += sum(
+        [
+            order_room.get("reservation").get("room").cost_per_day
+            for order_room in order_rooms
+        ]
+    )
+    return price

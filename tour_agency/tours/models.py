@@ -20,17 +20,17 @@ class Tour(BaseModel):
     def days(self):
         return self.tour_features.aggregate(Sum("days"))["days__sum"]
 
-    @property
-    def min_price(self):
-        hotel_price = 0
-        for feature in self.tour_features.filter(hotel__isnull=False).select_related(
-            "hotel"
-        ):
-            room = feature.hotel.room_types.order_by("cost_per_day").first()
-            if room:
-                hotel_price += room.cost_per_day
-
-        return self.price + hotel_price
+    # @property
+    # def min_price(self):
+    #     hotel_price = 0
+    #     for feature in self.tour_features.filter(hotel__isnull=False).select_related(
+    #         "hotel"
+    #     ):
+    #         room = feature.hotel.room_types.order_by("cost_per_day").first()
+    #         if room:
+    #             hotel_price += room.cost_per_day
+    #
+    #     return self.price + hotel_price
 
     @property
     def hotels(self):

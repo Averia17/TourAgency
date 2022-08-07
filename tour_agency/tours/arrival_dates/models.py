@@ -19,7 +19,7 @@ class ArrivalDates(models.Model):
         return f"{self.pk} {self.date.date()} {self.tour}"
 
     def clean(self):
-        if self.discount > self.tour.min_price:
+        if self.discount >= self.tour.price:
             raise ValidationError("Discount cannot be bigger than tour minimal price")
 
     def save(

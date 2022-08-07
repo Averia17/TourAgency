@@ -18,4 +18,12 @@ CONVENIENCES_TYPES = (
     ("ROOM", "Room"),
 )
 
+ORDER_STATUSES = (
+    ("SUCCESS", "Success"),
+    ("PENDING_PAYMENT", "Pending payment"),
+    ("BOOKED", "Booked"),
+    ("FAULT", "Fault"),
+    ("CANCELED", "Canceled"),
+)
+
 CHECK_IN_TIME = "13:00:00"

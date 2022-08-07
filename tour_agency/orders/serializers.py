@@ -1,12 +1,12 @@
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CurrentUserDefault
+from rest_framework.fields import CurrentUserDefault, DecimalField, IntegerField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from hotels.serializers import RoomReservationSerializer
 from orders.models import Order, OrderRoom
-from orders.services import order_rooms
+from orders.services import book_rooms, get_order_price
 from users.models import User
 
 
@@ -27,21 +27,36 @@ class OrderRoomsSerializer(ModelSerializer):
 
 class OrderSerializer(ModelSerializer):
     ordered_rooms = OrderRoomsSerializer(many=True)
+    price = DecimalField(read_only=True, decimal_places=2, max_digits=10)
+    # price = DecimalField(decimal_places=2, max_digits=10)
+    count_persons = IntegerField(write_only=True)
     user = PrimaryKeyRelatedField(
         queryset=User.objects.all(), default=CurrentUserDefault()
     )
 
     class Meta:
         model = Order
-        fields = ("id", "user", "arrival_date", "price", "ordered_rooms")
+        fields = (
+            "id",
+            "user",
+            "arrival_date",
+            "price",
+            "ordered_rooms",
+            "count_persons",
+        )
 
     @transaction.atomic
     def create(self, validated_data):
         ordered_rooms = validated_data.pop("ordered_rooms")
         user = self.context["request"].user
-        instance = super().create(validated_data)
-        order_rooms(instance, ordered_rooms, user)
-        return instance
+        validated_data["price"] = get_order_price(
+            validated_data.get("arrival_date"),
+            validated_data.pop("count_persons"),
+            ordered_rooms,
+        )
+        order = super().create(validated_data)
+        book_rooms(order, ordered_rooms, user)
+        return order
 
     def validate(self, data):
         if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():

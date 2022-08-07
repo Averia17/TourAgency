@@ -9,6 +9,7 @@ from images.models import HotelImage
 from images.serializers import ImageSerializer
 from images.services import FileStandardUploadService
 from locations.serializers import CitySerializer
+from tours.services import AvailableRoomsService
 from users.models import User
 
 
@@ -128,12 +129,10 @@ class HotelDetailSerializer(HotelSerializer):
     def get_room_types(self, obj):
         start = self.context.get("start")
         end = self.context.get("end")
-        rooms = obj.room_types.all()
-        if start and end:
-            rooms = obj.available_rooms(start, end)
-        filter_params = self.context.get("filter_params")
-        if filter_params:
-            rooms = filter_rooms(filter_params, rooms)
+        rooms = AvailableRoomsService(
+            self.context.get("filter_params"),
+        ).get_rooms(obj, start, end)
+
         return RoomTypeSerializer(rooms, many=True).data
 
 
