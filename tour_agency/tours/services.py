@@ -19,7 +19,9 @@ class AvailableRoomsService:
     def get_rooms(self, hotel, start, end):
         rooms = hotel.room_types.all()
         if start and end:
-            rooms = hotel.available_rooms(start, end)
+            rooms = hotel.available_rooms(start, end).prefetch_related(
+                "images", "conveniences"
+            )
         if self.filter_params:
             rooms = filter_rooms(self.filter_params, rooms)
         return rooms
@@ -27,17 +29,12 @@ class AvailableRoomsService:
 
 class AvailableRoomsDataService(AvailableRoomsService):
     def get_rooms(self, hotel, start, end):
-        from hotels.serializers import HotelDetailSerializer
+        from hotels.serializers import RoomTypeSerializer
 
         return {
             "start": start,
             "end": end,
-            **HotelDetailSerializer(
-                hotel,
-                context={
-                    "start": start,
-                    "end": end,
-                    "filter_params": self.filter_params,
-                },
+            hotel.pk: RoomTypeSerializer(
+                super().get_rooms(hotel, start, end), many=True
             ).data,
         }

@@ -20,17 +20,17 @@ class Tour(BaseModel):
     def days(self):
         return self.tour_features.aggregate(Sum("days"))["days__sum"]
 
-    # @property
-    # def min_price(self):
-    #     hotel_price = 0
-    #     for feature in self.tour_features.filter(hotel__isnull=False).select_related(
-    #         "hotel"
-    #     ):
-    #         room = feature.hotel.room_types.order_by("cost_per_day").first()
-    #         if room:
-    #             hotel_price += room.cost_per_day
-    #
-    #     return self.price + hotel_price
+    @property
+    def min_price(self):
+        hotel_price = 0
+        for feature in self.tour_features.filter(hotel__isnull=False).select_related(
+            "hotel"
+        ):
+            room = feature.hotel.room_types.order_by("cost_per_day").first()
+            if room:
+                hotel_price += room.cost_per_day
+
+        return self.price + hotel_price
 
     @property
     def hotels(self):
@@ -65,15 +65,6 @@ class TourFeature(BaseModel):
     tour = models.ForeignKey(
         Tour, related_name="tour_features", on_delete=models.CASCADE
     )
-
-    @property
-    def start(self):
-        try:
-            previous = self.get_previous_in_order()
-            start = previous.end
-        except self.DoesNotExist:
-            start = 0
-        return start + 1
 
     class Meta(Tour.Meta):
         app_label = "tours"

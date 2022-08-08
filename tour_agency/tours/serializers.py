@@ -24,7 +24,6 @@ class TourFeatureSerializer(ModelSerializer):
             "title",
             "description",
             "days",
-            "start",
             "destination",
             "hotel",
             "food",
