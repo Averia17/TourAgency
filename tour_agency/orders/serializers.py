@@ -7,6 +7,8 @@ from rest_framework.serializers import ModelSerializer
 from hotels.serializers import RoomReservationSerializer
 from orders.models import Order, OrderRoom
 from orders.services import book_rooms, get_order_price
+from tours.arrival_dates.models import ArrivalDates
+from tours.arrival_dates.serializers import ArrivalDateDetailSerializer
 from users.models import User
 
 
@@ -26,24 +28,29 @@ class OrderRoomsSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
-    ordered_rooms = OrderRoomsSerializer(many=True)
     price = DecimalField(read_only=True, decimal_places=2, max_digits=10)
-    # price = DecimalField(decimal_places=2, max_digits=10)
     count_persons = IntegerField()
-    user = PrimaryKeyRelatedField(
-        queryset=User.objects.all(), default=CurrentUserDefault()
-    )
 
     class Meta:
         model = Order
-        fields = (
-            "id",
-            "user",
-            "arrival_date",
-            "price",
-            "ordered_rooms",
-            "count_persons",
-        )
+        fields = ("id", "arrival_date", "price", "count_persons")
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result["arrival_date"] = ArrivalDateDetailSerializer(
+            ArrivalDates.objects.get(pk=result["arrival_date"])
+        ).data
+        return result
+
+
+class OrderDetailSerializer(OrderSerializer):
+    ordered_rooms = OrderRoomsSerializer(many=True)
+    user = PrimaryKeyRelatedField(
+        queryset=User.objects.all(), default=CurrentUserDefault(), write_only=True
+    )
+
+    class Meta(OrderSerializer.Meta):
+        fields = OrderSerializer.Meta.fields + ("user", "ordered_rooms")
 
     @transaction.atomic
     def create(self, validated_data):
