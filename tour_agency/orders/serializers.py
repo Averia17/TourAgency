@@ -29,7 +29,7 @@ class OrderSerializer(ModelSerializer):
     ordered_rooms = OrderRoomsSerializer(many=True)
     price = DecimalField(read_only=True, decimal_places=2, max_digits=10)
     # price = DecimalField(decimal_places=2, max_digits=10)
-    count_persons = IntegerField(write_only=True)
+    count_persons = IntegerField()
     user = PrimaryKeyRelatedField(
         queryset=User.objects.all(), default=CurrentUserDefault()
     )
@@ -51,7 +51,7 @@ class OrderSerializer(ModelSerializer):
         user = self.context["request"].user
         validated_data["price"] = get_order_price(
             validated_data.get("arrival_date"),
-            validated_data.pop("count_persons"),
+            validated_data.get("count_persons"),
             ordered_rooms,
         )
         order = super().create(validated_data)

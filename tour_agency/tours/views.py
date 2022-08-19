@@ -1,8 +1,10 @@
 from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from images.models import HotelImage
+from tours.arrival_dates.models import ArrivalDates
 from tours.filters import TourFilter
 from tours.models import Tour, TourFeature
 from tours.serializers import (
@@ -13,7 +15,6 @@ from tours.serializers import (
 
 class TourViewSet(ModelViewSet):
     queryset = Tour.objects.all().prefetch_related(
-        "arrival_dates",
         "images",
         Prefetch(
             "tour_features",
@@ -22,6 +23,10 @@ class TourViewSet(ModelViewSet):
                 "hotel",
                 "destination__image",
             ).prefetch_related("hotel__images"),
+        ),
+        Prefetch(
+            "arrival_dates",
+            queryset=ArrivalDates.objects.prefetch_related("orders"),
         ),
     )
 

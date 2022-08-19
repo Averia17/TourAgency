@@ -15,6 +15,9 @@ class Tour(BaseModel):
     )
     price = models.DecimalField(_("Price"), max_digits=10, decimal_places=2)
     tour_type = models.CharField(max_length=16, choices=TOUR_TYPES, default="LAND")
+    max_passengers = models.PositiveSmallIntegerField(
+        _("Max number of passengers"), null=True, blank=True
+    )
 
     @property
     def days(self):

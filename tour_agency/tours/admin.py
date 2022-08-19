@@ -26,6 +26,7 @@ class TourAdmin(admin.ModelAdmin):
                     "description",
                     "days",
                     "tour_type",
+                    "max_passengers",
                     "price",
                 ]
             },

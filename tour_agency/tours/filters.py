@@ -34,4 +34,4 @@ class TourFilter(filters.FilterSet):
 
     class Meta:
         model = Tour
-        fields = ["tour_type"]
+        fields = ["tour_type", "destinations"]

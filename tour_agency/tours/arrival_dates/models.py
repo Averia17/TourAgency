@@ -1,7 +1,10 @@
 from django.db import models
+from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+
+from orders.models import Order
 
 
 class ArrivalDates(models.Model):
@@ -17,6 +20,14 @@ class ArrivalDates(models.Model):
 
     def __str__(self):
         return f"{self.pk} {self.date.date()} {self.tour}"
+
+    @property
+    def count_available(self) -> int:
+        count_ordered_passengers = (
+            self.orders.aggregate(Sum("count_persons"))["count_persons__sum"] or 0
+        )
+        if self.tour.max_passengers:
+            return self.tour.max_passengers - count_ordered_passengers
 
     def clean(self):
         if self.discount >= self.tour.price:
