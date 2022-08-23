@@ -4,7 +4,6 @@ from rest_framework.serializers import ModelSerializer
 
 from core.utils import string_to_list, string_to_datetime
 from hotels.models import Hotel, RoomType, Convenience, RoomReservation
-from hotels.services import filter_rooms
 from images.models import HotelImage
 from images.serializers import ImageSerializer
 from images.services import FileStandardUploadService
