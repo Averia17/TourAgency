@@ -2,7 +2,7 @@ from hotels.models import RoomReservation
 from orders.models import OrderRoom
 
 
-def book_rooms(order, room_to_order: list, user):
+def book_rooms(order, rooms_to_order: list, user):
     # create rooms reservations
     reservations = [
         RoomReservation.objects.create(
@@ -11,7 +11,7 @@ def book_rooms(order, room_to_order: list, user):
             room=reservation["reservation"]["room"],
             user=user,
         )
-        for reservation in room_to_order
+        for reservation in rooms_to_order
     ]
     # order rooms
     ordered_rooms = [

@@ -62,6 +62,7 @@ class TourDetailSerializer(ModelSerializer):
 
     class Meta(TourSerializer.Meta):
         fields = TourSerializer.Meta.fields + (
+            "price",
             "arrival_dates",
             "days",
             "features",
