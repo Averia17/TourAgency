@@ -20,13 +20,12 @@ def book_rooms(order, rooms_to_order: list, user):
     return OrderRoom.objects.bulk_create(ordered_rooms)
 
 
-def get_order_price(arrival_date, count_persons, order_rooms):
-    price = (arrival_date.tour.price - arrival_date.discount) * count_persons
+def get_order_price(arrival_date, count_tickets, order_rooms):
+    price = (arrival_date.tour.price - arrival_date.discount) * count_tickets
 
-    price += sum(
-        [
-            order_room.get("reservation").get("room").cost_per_day
-            for order_room in order_rooms
-        ]
-    )
+    for order_room in order_rooms:
+        reservation = order_room.get("reservation")
+        room_cost = reservation.get("room").cost_per_day
+        ordered_days = (reservation.get("end") - reservation.get("start")).days
+        price += room_cost * ordered_days
     return price

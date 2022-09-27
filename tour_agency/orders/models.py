@@ -19,7 +19,7 @@ class Order(BaseModel):
     status = models.CharField(
         _("Status"), max_length=15, choices=ORDER_STATUSES, default="BOOKED"
     )
-    count_persons = models.PositiveSmallIntegerField(_("Count Persons"))
+    count_tickets = models.PositiveSmallIntegerField(_("Count Tickets"))
 
     def __str__(self):
         return f"{self.pk} {self.arrival_date}"
@@ -27,7 +27,7 @@ class Order(BaseModel):
     def clean(self):
         if (
             self.arrival_date.count_available is not None
-            and self.arrival_date.count_available - self.count_persons < 0
+            and self.arrival_date.count_available - self.count_tickets < 0
         ):
             raise ValidationError("Tour with this date has no available places")
 

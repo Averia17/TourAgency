@@ -29,11 +29,11 @@ class OrderRoomsSerializer(ModelSerializer):
 
 class OrderSerializer(ModelSerializer):
     price = DecimalField(read_only=True, decimal_places=2, max_digits=10)
-    count_persons = IntegerField()
+    count_tickets = IntegerField()
 
     class Meta:
         model = Order
-        fields = ("id", "arrival_date", "price", "count_persons")
+        fields = ("id", "arrival_date", "price", "count_tickets")
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
@@ -58,14 +58,14 @@ class OrderDetailSerializer(OrderSerializer):
         user = self.context["request"].user
         validated_data["price"] = get_order_price(
             validated_data.get("arrival_date"),
-            validated_data.get("count_persons"),
+            validated_data.get("count_tickets"),
             ordered_rooms,
         )
         order = super().create(validated_data)
         book_rooms(order, ordered_rooms, user)
         return order
 
-    def validate(self, data):
-        if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():
-            raise ValidationError("Count ordered rooms not equal count hotels")
-        return super().validate(data)
+    # def validate(self, data):
+    #     if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():
+    #         raise ValidationError("Count ordered rooms not equal count hotels")
+    #     return super().validate(data)

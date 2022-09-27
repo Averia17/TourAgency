@@ -11,7 +11,7 @@ class OrderAdmin(admin.ModelAdmin):
     fieldsets = [
         (
             None,
-            {"fields": ["arrival_date", "user", "price", "status", "count_persons"]},
+            {"fields": ["arrival_date", "user", "price", "status", "count_tickets"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]
