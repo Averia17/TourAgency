@@ -65,7 +65,7 @@ class OrderDetailSerializer(OrderSerializer):
         book_rooms(order, ordered_rooms, user)
         return order
 
-    # def validate(self, data):
-    #     if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():
-    #         raise ValidationError("Count ordered rooms not equal count hotels")
-    #     return super().validate(data)
+    def validate(self, data):
+        if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():
+            raise ValidationError("Count ordered rooms not equal count hotels")
+        return super().validate(data)

@@ -50,7 +50,7 @@ class AvailableRoomsDataService(AvailableRoomsService):
                     for room in grouped_hotels[hotel_id]["rooms"]
                     if room in data["rooms"]
                 ]
-                grouped_hotels[hotel_id]["dates"].append(data["dates"])
+                grouped_hotels[hotel_id]["dates"].extend(data["dates"])
             else:
                 grouped_hotels[hotel_id] = data
         return grouped_hotels
