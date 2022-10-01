@@ -20,6 +20,21 @@ services:
       - tour_agency/.env
     depends_on:
       - db
-
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+    restart: on-failure
+  celery:
+    build: ./tour_agency
+    command: celery -A tour_agency worker -B
+    volumes:
+      - ./tour_agency:/app/backend
+    depends_on:
+      - db
+      - rabbitmq
+      - backend
 volumes:
   postgres_data:

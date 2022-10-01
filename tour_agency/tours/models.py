@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Min
 from django.utils.translation import gettext_lazy as _
 
 from core.constants import TOUR_TYPES, MEALS
@@ -25,13 +25,14 @@ class Tour(BaseModel):
 
     @property
     def min_price(self):
-        hotel_price = 0
-        for feature in self.tour_features.filter(hotel__isnull=False).select_related(
-            "hotel"
-        ):
-            room = feature.hotel.room_types.order_by("cost_per_day").first()
-            if room:
-                hotel_price += room.cost_per_day
+        hotel_price = sum(
+            [
+                feature.min_room_price
+                for feature in self.tour_features.filter(hotel__isnull=False).annotate(
+                    min_room_price=Min("hotel__room_types__cost_per_day")
+                )
+            ]
+        )
 
         return self.price + hotel_price
 

@@ -10,6 +10,7 @@ from orders.services import book_rooms, get_order_price
 from tours.arrival_dates.models import ArrivalDates
 from tours.arrival_dates.serializers import ArrivalDateDetailSerializer
 from users.models import User
+from tour_agency.tasks import send_ordered_tour_email
 
 
 class OrderRoomsSerializer(ModelSerializer):
@@ -63,6 +64,7 @@ class OrderDetailSerializer(OrderSerializer):
         )
         order = super().create(validated_data)
         book_rooms(order, ordered_rooms, user)
+        send_ordered_tour_email.delay(user.email, order.arrival_date.tour.title)
         return order
 
     def validate(self, data):

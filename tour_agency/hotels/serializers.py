@@ -60,11 +60,16 @@ class RoomDetailSerializer(RoomTypeSerializer):
 
 # TODO: search better way to create serializer with {id: "", name: ""}
 class SimpleHotelSerializer(ModelSerializer):
-    image = ImageSerializer(source="images.first")
+    image = ImageSerializer(source="images", many=True)
 
     class Meta:
         model = Hotel
         fields = ("id", "name", "image")
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result.update({"image": result["image"][0] if result["image"] else None})
+        return result
 
 
 class HotelSerializer(ModelSerializer):

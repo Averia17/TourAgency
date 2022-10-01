@@ -11,5 +11,6 @@ olefile==0.46
 django-filter==22.1
 django-debug-toolbar==3.5.0
 requests==2.28.1
+celery==5.2.7
 
 pydevd-pycharm==221.5921.27
