@@ -19,11 +19,13 @@ CONVENIENCES_TYPES = (
 )
 
 ORDER_STATUSES = (
-    ("SUCCESS", "Success"),
-    ("PENDING_PAYMENT", "Pending payment"),
+    ("SUCCESS", "Successfully ordered"),
     ("BOOKED", "Booked"),
     ("FAULT", "Fault"),
     ("CANCELED", "Canceled"),
 )
 
 CHECK_IN_TIME = "13:00:00"
+
+ORDER_SUBJECT = "Order created"
+ORDER_MESSAGE = "Thank you for ordering tour {tour}"

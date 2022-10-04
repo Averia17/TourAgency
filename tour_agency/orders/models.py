@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
@@ -55,3 +57,9 @@ class OrderRoom(BaseModel):
     class Meta:
         app_label = "orders"
         verbose_name_plural = "OrderRooms"
+
+
+@receiver(post_delete, sender=OrderRoom)
+def post_delete_reservation(sender, instance, *args, **kwargs):
+    if instance.reservation:
+        instance.reservation.delete()

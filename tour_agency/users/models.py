@@ -27,6 +27,7 @@ class UserManager(BaseUserManager):
             password,
         )
         user.is_staff = True
+        user.is_manager = True
         user.save(using=self._db)
         return user
 
@@ -34,6 +35,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, BaseModel):
     email = models.EmailField(_("Email"), unique=True, max_length=256, blank=False)
     is_staff = models.BooleanField(_("Is staff"), default=False)
+    is_manager = models.BooleanField(_("Is manager"), default=False)
     is_active = models.BooleanField(_("Is active"), default=True)
     objects = UserManager()
 

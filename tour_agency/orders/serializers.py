@@ -4,6 +4,7 @@ from rest_framework.fields import CurrentUserDefault, DecimalField, IntegerField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
+from core.constants import ORDER_SUBJECT, ORDER_MESSAGE
 from hotels.serializers import RoomReservationSerializer
 from orders.models import Order, OrderRoom
 from orders.services import book_rooms, get_order_price
@@ -64,10 +65,14 @@ class OrderDetailSerializer(OrderSerializer):
         )
         order = super().create(validated_data)
         book_rooms(order, ordered_rooms, user)
-        send_ordered_tour_email.delay(user.email, order.arrival_date.tour.title)
+        send_ordered_tour_email.delay(
+            user.email,
+            ORDER_SUBJECT,
+            ORDER_MESSAGE.format(tour=order.arrival_date.tour.title),
+        )
         return order
 
-    def validate(self, data):
-        if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():
-            raise ValidationError("Count ordered rooms not equal count hotels")
-        return super().validate(data)
+    # def validate(self, data):
+    #     if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():
+    #         raise ValidationError("Count ordered rooms not equal count hotels")
+    #     return super().validate(data)

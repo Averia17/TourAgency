@@ -10,11 +10,7 @@ def test_task():
 
 
 @shared_task
-def send_ordered_tour_email(user_email, title):
+def send_ordered_tour_email(user_email, subject, message):
     send_mail(
-        "Order created",
-        f"Thank you for ordering tour {title}",
-        settings.EMAIL_HOST_USER,
-        [user_email],
-        fail_silently=False,
+        subject, message, settings.EMAIL_HOST_USER, [user_email], fail_silently=False
     )
