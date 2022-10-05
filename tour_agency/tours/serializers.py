@@ -1,4 +1,6 @@
-from rest_framework.fields import CharField
+import datetime
+
+from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from core.constants import MEALS
@@ -21,6 +23,7 @@ class TourFeatureSerializer(ModelSerializer):
     class Meta:
         model = TourFeature
         fields = (
+            "id",
             "title",
             "description",
             "days",
@@ -31,10 +34,20 @@ class TourFeatureSerializer(ModelSerializer):
 
 
 class TourFeatureDetailSerializer(TourFeatureSerializer):
-    hotel = HotelDetailSerializer()
+    hotel = SerializerMethodField()
 
     class Meta(TourFeatureSerializer.Meta):
         pass
+
+    def get_hotel(self, obj):
+        return HotelDetailSerializer(
+            obj.hotel,
+            context={
+                "start": self.context.get("start"),
+                "end": self.context.get("end"),
+                "filter_params": self.context.get("filter_params"),
+            },
+        ).data
 
 
 class TourSerializer(ModelSerializer):
@@ -69,3 +82,23 @@ class TourDetailSerializer(ModelSerializer):
             "features",
             "description",
         )
+
+
+class TourDetailFeaturesSerializer(TourSerializer):
+    features = SerializerMethodField()
+
+    class Meta(TourSerializer.Meta):
+        fields = TourSerializer.Meta.fields + ("features",)
+
+    def get_features(self, obj):
+        start = self.context.get("start")
+        data = []
+        for feature in obj.tour_features.all():
+            end = start + datetime.timedelta(days=feature.days)
+            data.append(
+                TourFeatureDetailSerializer(
+                    feature, context={"start": start, "end": end}
+                ).data
+            )
+            start = end
+        return data

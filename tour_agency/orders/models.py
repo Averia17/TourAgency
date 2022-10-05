@@ -1,12 +1,15 @@
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
 from core.constants import ORDER_STATUSES
 from core.models import BaseModel
-from hotels.models import RoomReservation
+from core.utils import one_day_hence
+from hotels.models import RoomType
+from tours.models import TourFeature
 from users.models import User
 
 
@@ -44,22 +47,36 @@ class Order(BaseModel):
 
 
 class OrderRoom(BaseModel):
-    reservation = models.OneToOneField(
-        RoomReservation, primary_key=True, on_delete=models.CASCADE
+    user = models.ForeignKey(
+        User, related_name="ordered_rooms", on_delete=models.CASCADE
+    )
+    start = models.DateTimeField(default=timezone.now)
+    end = models.DateTimeField(default=one_day_hence)
+    room = models.ForeignKey(
+        RoomType, related_name="ordered_rooms", on_delete=models.CASCADE
     )
     order = models.ForeignKey(
         Order, related_name="ordered_rooms", on_delete=models.CASCADE
     )
+    feature = models.ForeignKey(
+        TourFeature, related_name="ordered_rooms", on_delete=models.CASCADE
+    )
 
     def __str__(self):
-        return f"{self.order} {self.reservation}"
+        return f"{self.order} {self.room}"
 
     class Meta:
         app_label = "orders"
         verbose_name_plural = "OrderRooms"
 
+    def clean(self):
+        if self.start > self.end:
+            raise ValidationError("Start date cannot be bigger than end date")
+        if not self.room.is_available(self.start, self.end):
+            raise ValidationError("Room is not available for these dates")
 
-@receiver(post_delete, sender=OrderRoom)
-def post_delete_reservation(sender, instance, *args, **kwargs):
-    if instance.reservation:
-        instance.reservation.delete()
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        self.full_clean()
+        return super().save(force_insert, force_update, using, update_fields)

@@ -1,4 +1,4 @@
-from rest_framework.fields import IntegerField
+from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from tours.arrival_dates.models import ArrivalDates
@@ -20,3 +20,15 @@ class ArrivalDateDetailSerializer(ModelSerializer):
     class Meta:
         model = ArrivalDates
         fields = ("id", "date", "tour")
+
+
+class ArrivalDateAvailableRoomsSerializer(ArrivalDateDetailSerializer):
+    tour = SerializerMethodField()
+
+    class Meta(ArrivalDateDetailSerializer.Meta):
+        pass
+
+    def get_tour(self, obj):
+        from tours.serializers import TourDetailFeaturesSerializer
+
+        return TourDetailFeaturesSerializer(obj.tour, context={"start": obj.date}).data

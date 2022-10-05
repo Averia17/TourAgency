@@ -45,9 +45,9 @@ class Hotel(BaseModel, StreetMixin):
         rooms = (
             self.room_types.annotate(
                 reserved_dates=Count(
-                    "rented_dates",
+                    "ordered_rooms",
                     filter=Q(
-                        rented_dates__end__gte=start, rented_dates__start__lte=end
+                        ordered_rooms__end__gte=start, ordered_rooms__start__lte=end
                     ),
                 )
             )
@@ -85,7 +85,7 @@ class RoomType(BaseModel):
         return f"{self.pk} {self.name}: {self.hotel}"
 
     def is_available(self, start, end):
-        reserved_dates = self.rented_dates.filter(end__gte=start, start__lte=end)
+        reserved_dates = self.ordered_rooms.filter(end__gte=start, start__lte=end)
         return self.count_rooms > reserved_dates.count()
 
     class Meta:
@@ -95,41 +95,6 @@ class RoomType(BaseModel):
         constraints = [
             models.UniqueConstraint(fields=["name", "hotel"], name="uq_name_hotel")
         ]
-
-
-# TODO: add related_name
-class Rent(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        abstract = True
-
-
-class RoomReservation(Rent):
-    start = models.DateTimeField(default=timezone.now)
-    end = models.DateTimeField(default=one_day_hence)
-    room = models.ForeignKey(
-        RoomType, related_name="rented_dates", on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return f"{self.room}: {self.start.date()} - {self.end.date()}"
-
-    def clean(self):
-        if self.start > self.end:
-            raise ValidationError("Start date cannot be bigger than end date")
-        if not self.room.is_available(self.start, self.end):
-            raise ValidationError("Room is not available for these dates")
-
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        self.full_clean()
-        return super().save(force_insert, force_update, using, update_fields)
-
-    class Meta:
-        app_label = "hotels"
-        verbose_name_plural = "RoomReservations"
 
 
 # will be rent a plane

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from hotels.models import Hotel, RoomType, Convenience, RoomReservation
+from hotels.models import Hotel, RoomType, Convenience
 from images.admin import save_related_images, ImageInline
 from images.models import HotelImage, RoomImage
 
@@ -98,20 +98,6 @@ class ConvenienceAdmin(admin.ModelAdmin):
         (
             None,
             {"fields": ["name", "icon", "type"]},
-        ),
-        ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
-    ]
-
-
-@admin.register(RoomReservation)
-class RoomReservationAdmin(admin.ModelAdmin):
-    list_display = ["id", "room", "start", "end"]
-    search_fields = ["room"]
-    readonly_fields = ["created", "modified"]
-    fieldsets = [
-        (
-            None,
-            {"fields": ["room", "start", "end", "user"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]

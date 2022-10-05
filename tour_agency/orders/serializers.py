@@ -5,7 +5,6 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from core.constants import ORDER_SUBJECT, ORDER_MESSAGE
-from hotels.serializers import RoomReservationSerializer
 from orders.models import Order, OrderRoom
 from orders.services import book_rooms, get_order_price
 from tours.arrival_dates.models import ArrivalDates
@@ -15,18 +14,9 @@ from tour_agency.tasks import send_ordered_tour_email
 
 
 class OrderRoomsSerializer(ModelSerializer):
-    reservation = RoomReservationSerializer()
-
     class Meta:
         model = OrderRoom
-        fields = ("reservation",)
-
-    def to_representation(self, instance):
-        return super().to_representation(instance)["reservation"]
-
-    def to_internal_value(self, data):
-        data = {"reservation": data}
-        return super().to_internal_value(data)
+        fields = ("room", "feature", "start", "end")
 
 
 class OrderSerializer(ModelSerializer):

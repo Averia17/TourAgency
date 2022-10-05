@@ -19,13 +19,13 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderRoom)
 class OrderRoomAdmin(admin.ModelAdmin):
-    list_display = ["order", "reservation"]
-    list_filter = ["order"]
+    list_display = ["order", "room"]
+    list_filter = ["order", "room"]
     readonly_fields = ["created", "modified"]
     fieldsets = [
         (
             None,
-            {"fields": ["order", "reservation"]},
+            {"fields": ["order", "room", "start", "end", "user", "feature"]},
         ),
         ("System", {"classes": ["collapse"], "fields": ["created", "modified"]}),
     ]

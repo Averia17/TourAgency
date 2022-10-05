@@ -3,7 +3,7 @@ from collections import OrderedDict
 from django.contrib import admin, messages
 from django import forms
 from django.core.exceptions import ValidationError
-from images.models import Image, HotelImage, RoomImage, CountryImage, TourImage
+from images.models import Image
 
 from images.services import FileStandardUploadService
 
