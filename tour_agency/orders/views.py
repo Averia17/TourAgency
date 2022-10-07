@@ -1,14 +1,19 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import get_object_or_404
+from rest_framework.views import APIView
 
 from core.filter import CanViewOwnerOrAdminFilterBackend
 from core.permissions import IsManagerOrAdmin
+
 from orders.models import Order
 from orders.serializers import (
     OrderSerializer,
     OrderDetailSerializer,
 )
+from orders.services import get_order_price
+from tours.arrival_dates.models import ArrivalDates
 
 
 class OrderViewSet(ModelViewSet):
@@ -42,3 +47,17 @@ class OrderViewSet(ModelViewSet):
         order.status = kwargs["status"]
         serializer = self.get_serializer(order)
         return Response(serializer.data)
+
+
+# TODO: microservice
+class OrderPriceView(APIView):
+    def post(self, request):
+        serializer = OrderDetailSerializer(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid()
+        data = serializer.validated_data
+        price = get_order_price(
+            data["arrival_date"], data["count_tickets"], data["ordered_rooms"]
+        )
+        return Response(price)

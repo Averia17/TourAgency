@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from hotels.views import HotelsViewSet, RoomViewSet
 from locations.views import ContinentViewSet
-from orders.views import OrderViewSet
+from orders.views import OrderViewSet, OrderPriceView
 from tour_agency import settings
 from tours.arrival_dates.views import ArrivalDateViewSet
 from tours.views import TourViewSet
@@ -27,6 +27,7 @@ urlpatterns = [
     path("login/google/", GoogleLoginView.as_view(), name="login-with-google"),
     path("refresh-token/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token-verify/", TokenVerifyView.as_view(), name="token-verify"),
+    path("api/order/price/", OrderPriceView.as_view(), name="order-price"),
     path("api/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
