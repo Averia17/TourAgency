@@ -1,7 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 
 from core.filter import CanViewOwnerOrAdminFilterBackend
@@ -13,7 +12,6 @@ from orders.serializers import (
     OrderDetailSerializer,
 )
 from orders.services import get_order_price
-from tours.arrival_dates.models import ArrivalDates
 
 
 class OrderViewSet(ModelViewSet):

@@ -1,5 +1,4 @@
 from django.db import transaction
-from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CurrentUserDefault, DecimalField, IntegerField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
@@ -59,6 +58,7 @@ class OrderDetailSerializer(OrderSerializer):
             user.email,
             ORDER_SUBJECT,
             ORDER_MESSAGE.format(tour=order.arrival_date.tour.title),
+            True,
         )
         return order
 

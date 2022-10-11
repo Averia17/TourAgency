@@ -1,3 +1,7 @@
+import os.path
+
+from tour_agency.settings import BASE_DIR
+
 TOUR_TYPES = (
     ("LAND", "Land Tour"),
     ("ONE_DESTINATION", "One Destination Journey"),
@@ -29,3 +33,5 @@ CHECK_IN_TIME = "13:00:00"
 
 ORDER_SUBJECT = "Order created"
 ORDER_MESSAGE = "Thank you for ordering tour {tour}"
+
+ORDER_FILE_PATH = os.path.join(BASE_DIR, "request.pdf")
