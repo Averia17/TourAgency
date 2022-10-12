@@ -1,6 +1,4 @@
 from django.db import models
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError

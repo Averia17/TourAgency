@@ -1,6 +1,8 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -128,24 +130,47 @@ LOGGING = {
     "formatters": {
         "console": {
             "format": "%(levelname)-6s %(name)-12s %(asctime)s %(message)s",
-            "datefmt": "%H:%M:%S",
         },
+        "file": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"},
     },
     "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "console"},
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "formatter": "file",
+            "filename": "debug.log",
+        },
+        "celery": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "formatter": "console",
+            "filename": "celery.log",
+        },
     },
     "loggers": {
-        "": {
+        "": {"level": "DEBUG", "handlers": ["console", "file"]},
+        "celery": {
             "level": "DEBUG",
-            "handlers": [
-                "console",
-            ],
-        }
+            "handlers": ["celery", "console"],
+            "propagate": False,
+        },
     },
 }
 
 CELERY_BROKER_URL = "pyamqp://rabbitmq:5672"
 CELERY_RESULT_BACKEND = "rpc://rabbitmq:5672"
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "tour_agency.tasks.check_booked_time",
+        "schedule": crontab(minute="*/1"),
+    },
+}
 
 GOOGLE_OAUTH2_CLIENT_ID = os.getenv("GOOGLE_OAUTH2_CLIENT_ID")
 GOOGLE_OAUTH2_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH2_CLIENT_SECRET")

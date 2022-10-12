@@ -43,17 +43,17 @@ class OrderDetailSerializer(OrderSerializer):
     class Meta(OrderSerializer.Meta):
         fields = OrderSerializer.Meta.fields + ("user", "ordered_rooms")
 
-    @transaction.atomic
     def create(self, validated_data):
-        ordered_rooms = validated_data.pop("ordered_rooms")
-        user = self.context["request"].user
-        validated_data["price"] = get_order_price(
-            validated_data.get("arrival_date"),
-            validated_data.get("count_tickets"),
-            ordered_rooms,
-        )
-        order = super().create(validated_data)
-        book_rooms(order, ordered_rooms, user)
+        with transaction.atomic():
+            ordered_rooms = validated_data.pop("ordered_rooms")
+            user = self.context["request"].user
+            validated_data["price"] = get_order_price(
+                validated_data.get("arrival_date"),
+                validated_data.get("count_tickets"),
+                ordered_rooms,
+            )
+            order = super().create(validated_data)
+            book_rooms(order, ordered_rooms, user)
         send_ordered_tour_email.delay(
             user.email,
             ORDER_SUBJECT,

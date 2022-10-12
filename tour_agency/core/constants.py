@@ -31,7 +31,10 @@ ORDER_STATUSES = (
 
 CHECK_IN_TIME = "13:00:00"
 
+NUMBER_BOOKED_DAYS = 3
+
 ORDER_SUBJECT = "Order created"
 ORDER_MESSAGE = "Thank you for ordering tour {tour}"
 
-ORDER_FILE_PATH = os.path.join(BASE_DIR, "request.pdf")
+ORDER_FILE_NAME = "OrderRequest.pdf"
+ORDER_FILE_PATH = os.path.join(BASE_DIR, ORDER_FILE_NAME)
