@@ -1,5 +1,12 @@
+import logging
+
 from django.db import transaction
-from rest_framework.fields import CurrentUserDefault, DecimalField, IntegerField
+from rest_framework.fields import (
+    CurrentUserDefault,
+    DecimalField,
+    IntegerField,
+    CharField,
+)
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -12,6 +19,9 @@ from users.models import User
 from tour_agency.tasks import send_ordered_tour_email
 
 
+logger = logging.getLogger(__name__)
+
+
 class OrderRoomsSerializer(ModelSerializer):
     class Meta:
         model = OrderRoom
@@ -21,10 +31,11 @@ class OrderRoomsSerializer(ModelSerializer):
 class OrderSerializer(ModelSerializer):
     price = DecimalField(read_only=True, decimal_places=2, max_digits=10)
     count_tickets = IntegerField()
+    status = CharField(source="get_status_display", read_only=True)
 
     class Meta:
         model = Order
-        fields = ("id", "arrival_date", "price", "count_tickets")
+        fields = ("id", "arrival_date", "price", "count_tickets", "status")
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
@@ -54,6 +65,7 @@ class OrderDetailSerializer(OrderSerializer):
             )
             order = super().create(validated_data)
             book_rooms(order, ordered_rooms, user)
+            logger.info("order %s created", order.id)
         send_ordered_tour_email.delay(
             user.email,
             ORDER_SUBJECT,

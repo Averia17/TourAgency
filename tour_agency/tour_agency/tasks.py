@@ -1,8 +1,9 @@
 import logging.config
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from celery import shared_task
 from django.core.mail import EmailMessage
+from django.utils import timezone
 
 from core.constants import ORDER_FILE_PATH, NUMBER_BOOKED_DAYS, ORDER_FILE_NAME
 from tour_agency import settings
@@ -31,8 +32,8 @@ def send_ordered_tour_email(user_email, subject, message, attach_file=False):
 @shared_task
 def check_booked_time():
     logger.info("start book time check task")
-    end_booked_time = datetime.now() - timedelta(days=NUMBER_BOOKED_DAYS)
+    end_booked_time = timezone.now() - timedelta(days=NUMBER_BOOKED_DAYS)
     deleted_orders, count_deleted = Order.objects.filter(
-        created__lte=end_booked_time
+        created__lte=end_booked_time, status="BOOKED"
     ).delete()
     logger.info("deleted orders count %s", count_deleted.get("orders.Order", 0))

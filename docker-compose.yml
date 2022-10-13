@@ -33,7 +33,6 @@ services:
     volumes:
       - ./tour_agency:/app/backend
     depends_on:
-      - db
       - rabbitmq
       - backend
 volumes:

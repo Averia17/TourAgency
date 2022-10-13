@@ -1,3 +1,4 @@
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -44,6 +45,12 @@ class OrderViewSet(ModelViewSet):
         order = self.get_object()
         order.status = kwargs["status"]
         serializer = self.get_serializer(order)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["GET"], permission_classes=[IsManagerOrAdmin])
+    def booked(self, request):
+        booked_orders = self.get_queryset().filter(status="BOOKED")
+        serializer = self.get_serializer(booked_orders, many=True)
         return Response(serializer.data)
 
 

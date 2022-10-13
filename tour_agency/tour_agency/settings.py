@@ -166,9 +166,9 @@ CELERY_BROKER_URL = "pyamqp://rabbitmq:5672"
 CELERY_RESULT_BACKEND = "rpc://rabbitmq:5672"
 
 CELERY_BEAT_SCHEDULE = {
-    "sample_task": {
+    "check_booked_time": {
         "task": "tour_agency.tasks.check_booked_time",
-        "schedule": crontab(minute="*/1"),
+        "schedule": crontab(),
     },
 }
 
