@@ -10,7 +10,7 @@ from rest_framework.fields import (
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
-from core.constants import ORDER_SUBJECT, ORDER_MESSAGE
+from core.constants import ORDER_SUBJECT, ORDER_MESSAGE, ORDER_FILE_PATH
 from orders.models import Order, OrderRoom
 from orders.services import book_rooms, get_order_price
 from tours.arrival_dates.models import ArrivalDates
@@ -70,7 +70,7 @@ class OrderDetailSerializer(OrderSerializer):
             user.email,
             ORDER_SUBJECT,
             ORDER_MESSAGE.format(tour=order.arrival_date.tour.title),
-            True,
+            ORDER_FILE_PATH,
         )
         return order
 
