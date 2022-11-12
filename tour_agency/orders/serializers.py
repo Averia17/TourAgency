@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class OrderRoomsSerializer(ModelSerializer):
     class Meta:
         model = OrderRoom
-        fields = ("room", "feature", "start", "end")
+        fields = ("room", "feature")
 
 
 class OrderSerializer(ModelSerializer):

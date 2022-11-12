@@ -1,7 +1,5 @@
-import json
 from urllib.parse import urlencode
 
-import requests
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
@@ -33,20 +31,15 @@ class GoogleLoginView(APIView):
     def get(self, request, *args, **kwargs):
         code = request.data.get("code")
         error = request.data.get("error")
-
         login_url = f"{BASE_FRONTEND_URL}/login"
-
         if error or not code:
             params = urlencode({"error": error})
             return redirect(f"{login_url}?{params}")
         domain = BASE_BACKEND_URL
         api_uri = reverse("login-with-google")
         redirect_uri = f"{domain}{api_uri}"
-
         access_token = google_get_access_token(code, redirect_uri)
-
         data = google_get_user_info(access_token)
-
         # create user if not exist
         try:
             user = User.objects.get(email=data["email"])

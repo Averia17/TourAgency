@@ -2,6 +2,7 @@ from django.db.models import Prefetch
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from core.permissions import IsManagerOrAdmin
 from core.utils import string_to_list, true
 from hotels.models import Hotel, RoomType
 from hotels.serializers import (
@@ -20,6 +21,19 @@ class HotelsViewSet(ModelViewSet):
     serializer_classes = {
         "retrieve": HotelDetailSerializer,
     }
+    permission_to_method = {
+        "create": [IsManagerOrAdmin],
+        "update": [IsManagerOrAdmin],
+        "destroy": [IsManagerOrAdmin],
+    }
+
+    def get_permissions(self):
+        return [
+            permission()
+            for permission in self.permission_to_method.get(
+                self.action, self.permission_classes
+            )
+        ]
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
