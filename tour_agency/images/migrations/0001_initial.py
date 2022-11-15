@@ -11,87 +11,193 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('locations', '0001_initial'),
+        ("locations", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tours', '0001_initial'),
-        ('hotels', '0001_initial'),
+        ("tours", "0001_initial"),
+        ("hotels", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Image',
+            name="Image",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('image', models.ImageField(upload_to=images.utils.image_generate_upload_path, verbose_name='Image')),
-                ('original_file_name', models.TextField()),
-                ('file_name', models.CharField(max_length=255, unique=True)),
-                ('file_type', models.CharField(max_length=255)),
-                ('uploaded_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "image",
+                    models.ImageField(
+                        upload_to=images.utils.image_generate_upload_path,
+                        verbose_name="Image",
+                    ),
+                ),
+                ("original_file_name", models.TextField()),
+                ("file_name", models.CharField(max_length=255, unique=True)),
+                ("file_type", models.CharField(max_length=255)),
+                (
+                    "uploaded_by",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Images',
+                "verbose_name_plural": "Images",
             },
         ),
         migrations.CreateModel(
-            name='RoomImage',
+            name="RoomImage",
             fields=[
-                ('image_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='images.image')),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='hotels.roomtype')),
+                (
+                    "image_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="images.image",
+                    ),
+                ),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="hotels.roomtype",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'RoomImages',
-                'abstract': False,
+                "verbose_name_plural": "RoomImages",
+                "abstract": False,
             },
-            bases=('images.image',),
+            bases=("images.image",),
         ),
         migrations.CreateModel(
-            name='OneCityTourImage',
+            name="OneCityTourImage",
             fields=[
-                ('image_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='images.image')),
-                ('tour', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='tours.onecitytour')),
+                (
+                    "image_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="images.image",
+                    ),
+                ),
+                (
+                    "tour",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="tours.onecitytour",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'OneCityTourImages',
-                'abstract': False,
+                "verbose_name_plural": "OneCityTourImages",
+                "abstract": False,
             },
-            bases=('images.image',),
+            bases=("images.image",),
         ),
         migrations.CreateModel(
-            name='MultiCityTourImage',
+            name="MultiCityTourImage",
             fields=[
-                ('image_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='images.image')),
-                ('tour', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='tours.multicitytour')),
+                (
+                    "image_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="images.image",
+                    ),
+                ),
+                (
+                    "tour",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="tours.multicitytour",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'MultiCityTourImages',
-                'abstract': False,
+                "verbose_name_plural": "MultiCityTourImages",
+                "abstract": False,
             },
-            bases=('images.image',),
+            bases=("images.image",),
         ),
         migrations.CreateModel(
-            name='HotelImage',
+            name="HotelImage",
             fields=[
-                ('image_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='images.image')),
-                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='hotels.hotel')),
+                (
+                    "image_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="images.image",
+                    ),
+                ),
+                (
+                    "hotel",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="hotels.hotel",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'HotelImages',
-                'abstract': False,
+                "verbose_name_plural": "HotelImages",
+                "abstract": False,
             },
-            bases=('images.image',),
+            bases=("images.image",),
         ),
         migrations.CreateModel(
-            name='CountryImage',
+            name="CountryImage",
             fields=[
-                ('image_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='images.image')),
-                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='locations.country')),
+                (
+                    "image_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="images.image",
+                    ),
+                ),
+                (
+                    "country",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="locations.country",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'CountryImages',
-                'abstract': False,
+                "verbose_name_plural": "CountryImages",
+                "abstract": False,
             },
-            bases=('images.image',),
+            bases=("images.image",),
         ),
     ]

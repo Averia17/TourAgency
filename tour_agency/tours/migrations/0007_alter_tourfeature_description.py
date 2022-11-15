@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tours', '0006_alter_tour_tour_type'),
+        ("tours", "0006_alter_tour_tour_type"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='tourfeature',
-            name='description',
-            field=models.CharField(blank=True, max_length=1024, null=True, verbose_name='Description'),
+            model_name="tourfeature",
+            name="description",
+            field=models.CharField(
+                blank=True, max_length=1024, null=True, verbose_name="Description"
+            ),
         ),
     ]

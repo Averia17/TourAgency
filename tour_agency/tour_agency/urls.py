@@ -24,9 +24,9 @@ router.register("orders", OrderViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("login/google/", GoogleLoginView.as_view(), name="login-with-google"),
     path("refresh-token/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token-verify/", TokenVerifyView.as_view(), name="token-verify"),
+    path("api/login/google/", GoogleLoginView.as_view(), name="login-with-google"),
     path("api/order/price/", OrderPriceView.as_view(), name="order-price"),
     path("api/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

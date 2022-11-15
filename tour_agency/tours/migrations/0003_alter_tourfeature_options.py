@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tours', '0002_remove_multicitytour_end_remove_multicitytour_start_and_more'),
+        ("tours", "0002_remove_multicitytour_end_remove_multicitytour_start_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='tourfeature',
-            options={'get_latest_by': ['day', 'pk'], 'ordering': ['tour', 'day'], 'verbose_name_plural': 'TourFeature'},
+            name="tourfeature",
+            options={
+                "get_latest_by": ["day", "pk"],
+                "ordering": ["tour", "day"],
+                "verbose_name_plural": "TourFeature",
+            },
         ),
     ]

@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('orders', '0003_order_count_persons'),
+        ("orders", "0003_order_count_persons"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='order',
-            name='count_persons',
+            model_name="order",
+            name="count_persons",
         ),
         migrations.AddField(
-            model_name='order',
-            name='count_tickets',
-            field=models.PositiveSmallIntegerField(default=15, verbose_name='Count Tickets'),
+            model_name="order",
+            name="count_tickets",
+            field=models.PositiveSmallIntegerField(
+                default=15, verbose_name="Count Tickets"
+            ),
             preserve_default=False,
         ),
     ]

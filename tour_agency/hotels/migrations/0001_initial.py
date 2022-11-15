@@ -13,74 +13,191 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('locations', '0001_initial'),
+        ("locations", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Convenience',
+            name="Convenience",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('name', models.CharField(max_length=256, unique=True, verbose_name='Name')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "name",
+                    models.CharField(max_length=256, unique=True, verbose_name="Name"),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Conveniences',
+                "verbose_name_plural": "Conveniences",
             },
         ),
         migrations.CreateModel(
-            name='Hotel',
+            name="Hotel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('street', models.CharField(max_length=256, verbose_name='Street')),
-                ('name', models.CharField(max_length=256, unique=True, verbose_name='Name')),
-                ('stars_number', models.PositiveSmallIntegerField(validators=[django.core.validators.MaxValueValidator(5), django.core.validators.MinValueValidator(1)], verbose_name='Number of stars')),
-                ('description', models.CharField(blank=True, max_length=512, null=True, verbose_name='Description')),
-                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='locations.city')),
-                ('conveniences', models.ManyToManyField(blank=True, related_name='hotels', to='hotels.convenience')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                ("street", models.CharField(max_length=256, verbose_name="Street")),
+                (
+                    "name",
+                    models.CharField(max_length=256, unique=True, verbose_name="Name"),
+                ),
+                (
+                    "stars_number",
+                    models.PositiveSmallIntegerField(
+                        validators=[
+                            django.core.validators.MaxValueValidator(5),
+                            django.core.validators.MinValueValidator(1),
+                        ],
+                        verbose_name="Number of stars",
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True,
+                        max_length=512,
+                        null=True,
+                        verbose_name="Description",
+                    ),
+                ),
+                (
+                    "city",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="locations.city"
+                    ),
+                ),
+                (
+                    "conveniences",
+                    models.ManyToManyField(
+                        blank=True, related_name="hotels", to="hotels.convenience"
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Hotels',
-                'abstract': False,
+                "verbose_name_plural": "Hotels",
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='RoomType',
+            name="RoomType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('name', models.CharField(max_length=32, unique=True, verbose_name='Name')),
-                ('count_places', models.PositiveSmallIntegerField(default=2, verbose_name='Count places')),
-                ('is_family', models.BooleanField(default=False, verbose_name='Is family')),
-                ('cost_per_day', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Cost per day')),
-                ('description', models.CharField(blank=True, max_length=512, null=True, verbose_name='Description')),
-                ('square', models.FloatField(verbose_name='Square')),
-                ('count_rooms', models.PositiveSmallIntegerField(verbose_name='Count rooms')),
-                ('conveniences', models.ManyToManyField(blank=True, related_name='rooms', to='hotels.convenience')),
-                ('hotel', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='room_types', to='hotels.hotel')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                (
+                    "name",
+                    models.CharField(max_length=32, unique=True, verbose_name="Name"),
+                ),
+                (
+                    "count_places",
+                    models.PositiveSmallIntegerField(
+                        default=2, verbose_name="Count places"
+                    ),
+                ),
+                (
+                    "is_family",
+                    models.BooleanField(default=False, verbose_name="Is family"),
+                ),
+                (
+                    "cost_per_day",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="Cost per day"
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True,
+                        max_length=512,
+                        null=True,
+                        verbose_name="Description",
+                    ),
+                ),
+                ("square", models.FloatField(verbose_name="Square")),
+                (
+                    "count_rooms",
+                    models.PositiveSmallIntegerField(verbose_name="Count rooms"),
+                ),
+                (
+                    "conveniences",
+                    models.ManyToManyField(
+                        blank=True, related_name="rooms", to="hotels.convenience"
+                    ),
+                ),
+                (
+                    "hotel",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="room_types",
+                        to="hotels.hotel",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Rooms',
+                "verbose_name_plural": "Rooms",
             },
         ),
         migrations.CreateModel(
-            name='RoomReservation',
+            name="RoomReservation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, db_index=True)),
-                ('modified', models.DateTimeField(auto_now=True, db_index=True)),
-                ('start', models.DateTimeField(default=django.utils.timezone.now)),
-                ('end', models.DateTimeField(default=core.utils.one_day_hence)),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rented_dates', to='hotels.roomtype')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
+                ("modified", models.DateTimeField(auto_now=True, db_index=True)),
+                ("start", models.DateTimeField(default=django.utils.timezone.now)),
+                ("end", models.DateTimeField(default=core.utils.one_day_hence)),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rented_dates",
+                        to="hotels.roomtype",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'RoomReservations',
+                "verbose_name_plural": "RoomReservations",
             },
         ),
     ]

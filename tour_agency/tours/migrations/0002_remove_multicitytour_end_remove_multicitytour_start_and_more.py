@@ -8,55 +8,95 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tours', '0001_initial'),
+        ("tours", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='multicitytour',
-            name='end',
+            model_name="multicitytour",
+            name="end",
         ),
         migrations.RemoveField(
-            model_name='multicitytour',
-            name='start',
+            model_name="multicitytour",
+            name="start",
         ),
         migrations.RemoveField(
-            model_name='onecitytour',
-            name='end',
+            model_name="onecitytour",
+            name="end",
         ),
         migrations.RemoveField(
-            model_name='onecitytour',
-            name='start',
+            model_name="onecitytour",
+            name="start",
         ),
         migrations.AddField(
-            model_name='onecitytour',
-            name='days',
+            model_name="onecitytour",
+            name="days",
             field=models.PositiveSmallIntegerField(default=1),
         ),
         migrations.CreateModel(
-            name='OneCityArrivalDate',
+            name="OneCityArrivalDate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Arrival date')),
-                ('discount', models.PositiveSmallIntegerField(default=0)),
-                ('tour', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='arrival_dates', to='tours.onecitytour')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="Arrival date"
+                    ),
+                ),
+                ("discount", models.PositiveSmallIntegerField(default=0)),
+                (
+                    "tour",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="arrival_dates",
+                        to="tours.onecitytour",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'OneCityTourArrivalDates',
-                'abstract': False,
+                "verbose_name_plural": "OneCityTourArrivalDates",
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='MultiCityArrivalDate',
+            name="MultiCityArrivalDate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Arrival date')),
-                ('discount', models.PositiveSmallIntegerField(default=0)),
-                ('tour', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='arrival_dates', to='tours.multicitytour')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="Arrival date"
+                    ),
+                ),
+                ("discount", models.PositiveSmallIntegerField(default=0)),
+                (
+                    "tour",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="arrival_dates",
+                        to="tours.multicitytour",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'MultiCityArrivalDates',
-                'abstract': False,
+                "verbose_name_plural": "MultiCityArrivalDates",
+                "abstract": False,
             },
         ),
     ]

@@ -6,17 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hotels', '0005_alter_hotel_description'),
+        ("hotels", "0005_alter_hotel_description"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='roomtype',
-            options={'ordering': ['cost_per_day'], 'verbose_name_plural': 'Rooms'},
+            name="roomtype",
+            options={"ordering": ["cost_per_day"], "verbose_name_plural": "Rooms"},
         ),
         migrations.AddField(
-            model_name='roomtype',
-            name='count_rooms',
-            field=models.PositiveSmallIntegerField(default=10, verbose_name='Count rooms'),
+            model_name="roomtype",
+            name="count_rooms",
+            field=models.PositiveSmallIntegerField(
+                default=10, verbose_name="Count rooms"
+            ),
         ),
     ]

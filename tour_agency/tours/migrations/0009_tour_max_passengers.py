@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tours', '0008_alter_tourfeature_options_and_more'),
+        ("tours", "0008_alter_tourfeature_options_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tour',
-            name='max_passengers',
-            field=models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Max number of passengers'),
+            model_name="tour",
+            name="max_passengers",
+            field=models.PositiveSmallIntegerField(
+                blank=True, null=True, verbose_name="Max number of passengers"
+            ),
         ),
     ]

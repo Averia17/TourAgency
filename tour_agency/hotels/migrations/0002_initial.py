@@ -9,22 +9,30 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('hotels', '0001_initial'),
-        ('images', '0001_initial'),
+        ("hotels", "0001_initial"),
+        ("images", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='convenience',
-            name='icon',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='images.image'),
+            model_name="convenience",
+            name="icon",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="images.image",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='roomtype',
-            constraint=models.UniqueConstraint(fields=('name', 'hotel'), name='uq_name_hotel'),
+            model_name="roomtype",
+            constraint=models.UniqueConstraint(
+                fields=("name", "hotel"), name="uq_name_hotel"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='hotel',
-            constraint=models.UniqueConstraint(fields=('street', 'city'), name='uq_street_city'),
+            model_name="hotel",
+            constraint=models.UniqueConstraint(
+                fields=("street", "city"), name="uq_street_city"
+            ),
         ),
     ]

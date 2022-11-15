@@ -15,14 +15,14 @@ def generate_superuser(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='is_manager',
-            field=models.BooleanField(default=False, verbose_name='Is manager'),
+            model_name="user",
+            name="is_manager",
+            field=models.BooleanField(default=False, verbose_name="Is manager"),
         ),
         migrations.RunPython(generate_superuser),
     ]

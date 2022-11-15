@@ -7,14 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('images', '0002_rename_multicitytourimage_tourimage_and_more'),
-        ('locations', '0002_destination_description_destination_image'),
+        ("images", "0002_rename_multicitytourimage_tourimage_and_more"),
+        ("locations", "0002_destination_description_destination_image"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='destination',
-            name='image',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='images.image'),
+            model_name="destination",
+            name="image",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="images.image",
+            ),
         ),
     ]
