@@ -1,8 +1,12 @@
+import datetime
+import hashlib
+
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from core.constants import HASH_SALT
 from users.models import User
 
 
@@ -21,6 +25,18 @@ class UserRegisterSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "email", "password")
+
+
+class PasswordSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    token = serializers.CharField()
+    new_password = serializers.CharField(min_length=8)
+
+    def validate(self, data):
+        hash_str = data["email"] + str(datetime.date.today()) + HASH_SALT
+        if data["token"] != hashlib.sha256(hash_str.encode()).hexdigest():
+            raise serializers.ValidationError({"token": "token is not valid"})
+        return data
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

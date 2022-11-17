@@ -18,9 +18,10 @@ def test_task():
 
 
 @shared_task
-def send_ordered_tour_email(user_email, subject, message, file_path=""):
+def send_user_email(user_email, subject, message, file_path=""):
     logger.info("start send email task")
     mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [user_email])
+    mail.content_subtype = "html"
     if file_path:
         with open(file_path, "r", errors="ignore") as file:
             mail.attach(file.name, file.read(), "application/pdf")
@@ -45,7 +46,7 @@ def check_booked_time():
     end_booked_time = timezone.now() - timedelta(days=NUMBER_BOOKED_DAYS, hours=-3)
     orders = Order.objects.filter(created__lte=end_booked_time, status="BOOKED")
     for order in orders:
-        send_ordered_tour_email.delay(
+        send_user_email.delay(
             order.user.email,
             "Booking Order",
             f"Booking time for your order №{order.id} expires in less than 3 hours",

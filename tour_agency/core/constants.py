@@ -38,3 +38,5 @@ ORDER_MESSAGE = "Thank you for ordering tour {tour}"
 
 ORDER_FILE_NAME = "OrderRequest.pdf"
 ORDER_FILE_PATH = os.path.join(BASE_DIR, ORDER_FILE_NAME)
+
+HASH_SALT = "token"

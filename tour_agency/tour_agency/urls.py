@@ -10,7 +10,12 @@ from orders.views import OrderViewSet, OrderPriceView
 from tour_agency import settings
 from tours.arrival_dates.views import ArrivalDateViewSet
 from tours.views import TourViewSet
-from users.views import UserViewSet, CustomTokenObtainPairView, GoogleLoginView
+from users.views import (
+    UserViewSet,
+    CustomTokenObtainPairView,
+    GoogleLoginView,
+    ResetPasswordViewSet,
+)
 
 router = SimpleRouter()
 router.register("users", UserViewSet)
@@ -20,6 +25,7 @@ router.register("tours", TourViewSet)
 router.register("continents", ContinentViewSet)
 router.register("arrivals", ArrivalDateViewSet)
 router.register("orders", OrderViewSet)
+router.register("reset-password", ResetPasswordViewSet, "reset-password")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
