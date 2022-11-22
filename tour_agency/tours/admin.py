@@ -13,7 +13,7 @@ class TourImageInline(ImageInline):
 @admin.register(Tour)
 class TourAdmin(admin.ModelAdmin):
     inlines = [TourImageInline, ArrivalDateInline]
-    list_display = ["title", "tour_type", "price"]
+    list_display = ["id", "title", "tour_type", "price"]
     list_filter = ["tour_type"]
     search_fields = ["title"]
     readonly_fields = ["days", "created", "modified"]
@@ -43,7 +43,7 @@ class TourAdmin(admin.ModelAdmin):
 
 @admin.register(TourFeature)
 class TourFeatureAdmin(admin.ModelAdmin):
-    list_display = ["title", "tour", "days", "destination"]
+    list_display = ["id", "title", "tour", "days", "destination"]
     list_filter = ["destination"]
     search_fields = ["title"]
     readonly_fields = ["created", "modified"]

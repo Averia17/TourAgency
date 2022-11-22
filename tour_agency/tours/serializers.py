@@ -56,7 +56,7 @@ class TourSerializer(ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "images", "tour_type", "days")
+        fields = ("id", "title", "images", "tour_type", "days", "description")
 
     def to_representation(self, instance):
         result = super().to_representation(instance)
