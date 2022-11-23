@@ -7,7 +7,7 @@ from rest_framework.fields import (
     IntegerField,
     CharField,
 )
-from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework.relations import PrimaryKeyRelatedField, SlugRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from core.constants import ORDER_SUBJECT, ORDER_MESSAGE, ORDER_FILE_PATH
@@ -32,10 +32,11 @@ class OrderSerializer(ModelSerializer):
     price = DecimalField(read_only=True, decimal_places=2, max_digits=10)
     count_tickets = IntegerField()
     status = CharField(source="get_status_display", read_only=True)
+    user = SlugRelatedField(read_only=True, slug_field="email")
 
     class Meta:
         model = Order
-        fields = ("id", "arrival_date", "price", "count_tickets", "status")
+        fields = ("id", "arrival_date", "price", "count_tickets", "status", "created", "user")
 
     def to_representation(self, instance):
         result = super().to_representation(instance)

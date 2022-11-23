@@ -50,7 +50,7 @@ class DestinationAdmin(GISModelAdmin):
     list_display = ["name", "country"]
     list_filter = ["country"]
     search_fields = ["name"]
-    readonly_fields = ["created", "modified", "longitude", "latitude"]
+    readonly_fields = ["created", "modified"]
     fieldsets = [
         (
             None,
