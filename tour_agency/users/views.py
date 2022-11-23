@@ -61,11 +61,9 @@ class GoogleLoginView(APIView):
         return Response(response)
 
 
-class ResetPasswordViewSet(mixins.CreateModelMixin, GenericViewSet):
-    serializer_class = PasswordSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+class ResetPasswordViewSet(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         user = get_object_or_404(User, email=data["email"])
@@ -73,8 +71,9 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, GenericViewSet):
         user.save()
         return Response(status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=["POST"])
-    def send_email(self, request):
+
+class SendResetPasswordEmailViewSet(APIView):
+    def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         user = get_object_or_404(User, email=email)
         hash_str = email + str(datetime.date.today()) + HASH_SALT
