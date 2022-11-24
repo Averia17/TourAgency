@@ -1,5 +1,5 @@
-from rest_framework.mixins import CreateModelMixin, ListModelMixin
-from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.mixins import ListModelMixin
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet, ModelViewSet
 
 from locations.models import Continent, Country, Destination
 from locations.serializers import (
@@ -19,6 +19,6 @@ class CountryViewSet(ListModelMixin, GenericViewSet):
     serializer_class = CountrySerializer
 
 
-class DestinationViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
+class DestinationViewSet(ModelViewSet):
     queryset = Destination.objects.all()
     serializer_class = DestinationSerializer
