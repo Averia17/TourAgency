@@ -2,15 +2,12 @@ import datetime
 import hashlib
 
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.hashers import (
-    make_password,
-    PBKDF2PasswordHasher,
-    ScryptPasswordHasher,
-)
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from rest_framework import mixins, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
@@ -24,6 +21,7 @@ from users.serializers import (
     CustomTokenObtainPairSerializer,
     UserRegisterSerializer,
     PasswordSerializer,
+    UserDetailSerializer,
 )
 from users.services import google_validate_id_token
 from tour_agency.tasks import send_user_email
@@ -32,6 +30,16 @@ from tour_agency.tasks import send_user_email
 class UserViewSet(mixins.CreateModelMixin, GenericViewSet):
     serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=["GET"], serializer_class=UserDetailSerializer)
+    def my(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["POST"])
+    def has_admin_access(self, request):
+        return Response(request.user.is_staff or request.user.is_manager)
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -61,7 +69,7 @@ class GoogleLoginView(APIView):
         return Response(response)
 
 
-class ResetPasswordViewSet(APIView):
+class ResetPasswordView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = PasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -72,7 +80,7 @@ class ResetPasswordViewSet(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class SendResetPasswordEmailViewSet(APIView):
+class SendResetEmailView(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         user = get_object_or_404(User, email=email)

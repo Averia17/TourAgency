@@ -14,7 +14,8 @@ from users.views import (
     UserViewSet,
     CustomTokenObtainPairView,
     GoogleLoginView,
-    ResetPasswordViewSet, SendResetPasswordEmailViewSet,
+    ResetPasswordView,
+    SendResetEmailView,
 )
 
 router = SimpleRouter()
@@ -32,8 +33,12 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("login/google/", GoogleLoginView.as_view(), name="login-with-google"),
-    path("reset-password/", ResetPasswordViewSet.as_view(), name="reset-password"),
-    path("reset-password/send-mail/", SendResetPasswordEmailViewSet.as_view(), name="send-reset-email"),
+    path("reset-password/", ResetPasswordView.as_view(), name="reset-password"),
+    path(
+        "reset-password/send-mail/",
+        SendResetEmailView.as_view(),
+        name="send-reset-email",
+    ),
     path("refresh-token/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token-verify/", TokenVerifyView.as_view(), name="token-verify"),
     path("api/order/price/", OrderPriceView.as_view(), name="order-price"),

@@ -7,6 +7,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from core.constants import HASH_SALT
+from orders.serializers import OrderDetailSerializer
 from users.models import User
 
 
@@ -25,6 +26,14 @@ class UserRegisterSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "email", "password")
+
+
+class UserDetailSerializer(ModelSerializer):
+    orders = OrderDetailSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "is_staff", "is_manager", "orders")
 
 
 class PasswordSerializer(serializers.Serializer):

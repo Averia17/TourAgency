@@ -2,7 +2,11 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 
 from locations.models import Continent, Country, Destination
-from locations.serializers import ContinentDetailSerializer, CountrySerializer, DestinationSerializer
+from locations.serializers import (
+    ContinentDetailSerializer,
+    CountrySerializer,
+    DestinationSerializer,
+)
 
 
 class ContinentViewSet(ReadOnlyModelViewSet):
