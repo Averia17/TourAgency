@@ -10,7 +10,8 @@ from hotels.serializers import (
     HotelSerializer,
     HotelDetailSerializer,
     RoomDetailSerializer,
-    RoomTypeSerializer, RoomCreateSerializer,
+    RoomTypeSerializer,
+    RoomCreateSerializer,
 )
 from hotels.services import filter_rooms
 

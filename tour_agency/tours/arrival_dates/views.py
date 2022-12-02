@@ -2,7 +2,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from core.permissions import IsManagerOrAdmin
 from tours.arrival_dates.models import ArrivalDates
-from tours.arrival_dates.serializers import ArrivalDateAvailableRoomsSerializer, ArrivalDatesCreateSerializer
+from tours.arrival_dates.serializers import (
+    ArrivalDateAvailableRoomsSerializer,
+    ArrivalDatesCreateSerializer,
+)
 
 
 class ArrivalDateViewSet(ModelViewSet):

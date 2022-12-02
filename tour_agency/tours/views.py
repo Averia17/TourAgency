@@ -1,9 +1,13 @@
 from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from core.constants import TOUR_TYPES
 from core.permissions import IsManagerOrAdmin
+from locations.models import Destination
 from tours.filters import TourFilter
 from tours.models import Tour
 from tours.features.models import TourFeature
@@ -52,3 +56,13 @@ class TourViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
+
+    @action(detail=False, methods=["GET"])
+    def filter_params(self, request):
+        filters = {
+            "destinations": Destination.objects.filter(tour_features__isnull=False)
+            .values("id", "name")
+            .distinct(),
+            "tour_types": TOUR_TYPES,
+        }
+        return Response(filters)

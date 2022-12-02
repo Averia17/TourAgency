@@ -29,7 +29,7 @@ class ListFilter(Filter):
 # TODO: not distinct values
 class TourFilter(filters.FilterSet):
     destinations = ListFilter(
-        field_name="tour_features__destination__name", query_param="destinations"
+        field_name="tour_features__destination", query_param="destinations"
     )
     tour_type = filters.ChoiceFilter(field_name="tour_type", choices=TOUR_TYPES)
     start_date = filters.DateFilter(field_name="arrival_dates__date", lookup_expr="gte")

@@ -1,6 +1,11 @@
 import datetime
 
-from rest_framework.fields import CharField, SerializerMethodField, IntegerField, DecimalField
+from rest_framework.fields import (
+    CharField,
+    SerializerMethodField,
+    IntegerField,
+    DecimalField,
+)
 from rest_framework.serializers import ModelSerializer
 
 from hotels.serializers import HotelDetailSerializer
@@ -34,7 +39,16 @@ class TourSerializer(ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "images", "tour_type", "days", "description", "max_passengers", "price")
+        fields = (
+            "id",
+            "title",
+            "images",
+            "tour_type",
+            "days",
+            "description",
+            "max_passengers",
+            "price",
+        )
 
     def to_representation(self, instance):
         self.fields["tour_type"] = CharField(source="get_tour_type_display")
