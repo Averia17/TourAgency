@@ -3,12 +3,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
+from core.permissions import IsManagerOrAdmin
 from tours.filters import TourFilter
-from tours.models import Tour, TourFeature
-from tours.serializers import (
-    TourSerializer,
-    TourDetailSerializer,
-)
+from tours.models import Tour
+from tours.features.models import TourFeature
+from tours.serializers import TourSerializer, TourDetailSerializer
 
 
 class TourViewSet(ModelViewSet):
@@ -37,6 +36,19 @@ class TourViewSet(ModelViewSet):
     serializer_classes = {
         "retrieve": TourDetailSerializer,
     }
+    permission_to_method = {
+        "create": [IsManagerOrAdmin],
+        "update": [IsManagerOrAdmin],
+        "destroy": [IsManagerOrAdmin],
+    }
+
+    def get_permissions(self):
+        return [
+            permission()
+            for permission in self.permission_to_method.get(
+                self.action, self.permission_classes
+            )
+        ]
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)

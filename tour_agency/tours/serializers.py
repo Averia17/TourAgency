@@ -1,36 +1,13 @@
 import datetime
 
-from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.fields import CharField, SerializerMethodField, IntegerField, DecimalField
 from rest_framework.serializers import ModelSerializer
 
-from core.constants import MEALS
-from core.serializer_fields import ChoiceArrayField
-from hotels.serializers import (
-    SimpleHotelSerializer,
-    HotelDetailSerializer,
-)
+from hotels.serializers import HotelDetailSerializer
 from images.serializers import ImageSerializer
-from locations.serializers import DestinationSerializer
 from tours.arrival_dates.serializers import ArrivalDatesSerializer
-from tours.models import TourFeature, Tour
-
-
-class TourFeatureSerializer(ModelSerializer):
-    hotel = SimpleHotelSerializer()
-    destination = DestinationSerializer()
-    food = ChoiceArrayField(choices=MEALS)
-
-    class Meta:
-        model = TourFeature
-        fields = (
-            "id",
-            "title",
-            "description",
-            "days",
-            "destination",
-            "hotel",
-            "food",
-        )
+from tours.features.serializers import TourFeatureSerializer
+from tours.models import Tour
 
 
 class TourFeatureDetailSerializer(TourFeatureSerializer):
@@ -52,13 +29,15 @@ class TourFeatureDetailSerializer(TourFeatureSerializer):
 
 class TourSerializer(ModelSerializer):
     images = ImageSerializer(many=True, required=False)
-    tour_type = CharField(source="get_tour_type_display")
+    max_passengers = IntegerField(write_only=True)
+    price = DecimalField(write_only=True, decimal_places=2, max_digits=10)
 
     class Meta:
         model = Tour
-        fields = ("id", "title", "images", "tour_type", "days", "description")
+        fields = ("id", "title", "images", "tour_type", "days", "description", "max_passengers", "price")
 
     def to_representation(self, instance):
+        self.fields["tour_type"] = CharField(source="get_tour_type_display")
         result = super().to_representation(instance)
         instance.tour_features.prefetch_related("destination")
         result["destinations"] = instance.tour_features.values_list(

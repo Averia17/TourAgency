@@ -63,18 +63,18 @@ class OrderDetailSerializer(OrderSerializer):
     class Meta(OrderSerializer.Meta):
         fields = OrderSerializer.Meta.fields + ("user", "ordered_rooms")
 
+    @transaction.atomic
     def create(self, validated_data):
-        with transaction.atomic():
-            ordered_rooms = validated_data.pop("ordered_rooms")
-            user = self.context["request"].user
-            validated_data["price"] = get_order_price(
-                validated_data.get("arrival_date"),
-                validated_data.get("count_tickets"),
-                ordered_rooms,
-            )
-            order = super().create(validated_data)
-            book_rooms(order, ordered_rooms, user)
-            logger.info("order %s created", order.id)
+        ordered_rooms = validated_data.pop("ordered_rooms")
+        user = self.context["request"].user
+        validated_data["price"] = get_order_price(
+            validated_data.get("arrival_date"),
+            validated_data.get("count_tickets"),
+            ordered_rooms,
+        )
+        order = super().create(validated_data)
+        book_rooms(order, ordered_rooms, user)
+        logger.info("order %s created", order.id)
         send_user_email.delay(
             user.email,
             ORDER_SUBJECT,
@@ -82,8 +82,3 @@ class OrderDetailSerializer(OrderSerializer):
             ORDER_FILE_PATH,
         )
         return order
-
-    # def validate(self, data):
-    #     if len(data["ordered_rooms"]) != data["arrival_date"].tour.hotels.count():
-    #         raise ValidationError("Count ordered rooms not equal count hotels")
-    #     return super().validate(data)

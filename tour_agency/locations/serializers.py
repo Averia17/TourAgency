@@ -1,5 +1,6 @@
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
+from rest_framework.validators import UniqueTogetherValidator
 
 from images.serializers import ImageSerializer
 from locations.models import City, Continent, Country, Destination

@@ -19,3 +19,11 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class ImageUploadMixin:
+    def perform_create(self, serializer):
+        serializer.save(images=self.request.FILES.getlist("images"))
+
+    def perform_update(self, serializer):
+        serializer.save(images=self.request.FILES.getlist("images"))

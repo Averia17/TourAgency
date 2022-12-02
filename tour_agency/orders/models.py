@@ -7,7 +7,7 @@ from core.constants import ORDER_STATUSES
 from core.models import BaseModel
 from core.utils import one_day_hence
 from hotels.models import RoomType
-from tours.models import TourFeature
+from tours.features.models import TourFeature
 from users.models import User
 
 

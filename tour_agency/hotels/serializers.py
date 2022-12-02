@@ -20,7 +20,6 @@ class ConvenienceSerializer(ModelSerializer):
 
 
 class RoomTypeSerializer(ModelSerializer):
-    conveniences = ConvenienceSerializer(many=True)
     images = ImageSerializer(many=True, required=False)
 
     class Meta:
@@ -37,6 +36,7 @@ class RoomTypeSerializer(ModelSerializer):
         )
 
     def to_representation(self, instance):
+        self.fields["conveniences"] = ConvenienceSerializer(many=True)
         result = super().to_representation(instance)
         request = self.context.get("request")
         start_date = request.query_params.get("start", None) if request else None
@@ -53,9 +53,14 @@ class RoomDetailSerializer(RoomTypeSerializer):
         fields = RoomTypeSerializer.Meta.fields + (
             "square",
             "is_family",
-            "has_balcony",
             "description",
         )
+
+
+class RoomCreateSerializer(ModelSerializer):
+    class Meta:
+        model = RoomType
+        fields = "__all__"
 
 
 # TODO: search better way to create serializer with {id: "", name: ""}

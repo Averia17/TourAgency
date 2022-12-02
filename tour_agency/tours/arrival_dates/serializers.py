@@ -12,6 +12,11 @@ class ArrivalDatesSerializer(ModelSerializer):
         fields = ("id", "date", "discount", "count_available")
 
 
+class ArrivalDatesCreateSerializer(ModelSerializer):
+    class Meta:
+        model = ArrivalDates
+        fields = "__all__"
+
 class ArrivalDateDetailSerializer(ModelSerializer):
     from tours.serializers import TourSerializer
 

@@ -9,6 +9,7 @@ from locations.views import ContinentViewSet, CountryViewSet, DestinationViewSet
 from orders.views import OrderViewSet, OrderPriceView
 from tour_agency import settings
 from tours.arrival_dates.views import ArrivalDateViewSet
+from tours.features.views import TourFeatureViewSet
 from tours.views import TourViewSet
 from users.views import (
     UserViewSet,
@@ -28,6 +29,7 @@ router.register("arrivals", ArrivalDateViewSet)
 router.register("orders", OrderViewSet)
 router.register("countries", CountryViewSet)
 router.register("destinations", DestinationViewSet)
+router.register("features", TourFeatureViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

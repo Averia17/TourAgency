@@ -3,7 +3,8 @@ from django.contrib import admin
 from images.admin import save_related_images, ImageInline
 from images.models import TourImage
 from tours.arrival_dates.admin import ArrivalDateInline
-from tours.models import Tour, TourFeature
+from tours.models import Tour
+from tours.features.models import TourFeature
 
 
 class TourImageInline(ImageInline):

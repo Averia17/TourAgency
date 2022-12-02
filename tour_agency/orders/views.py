@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 
-from core.filter import CanViewOwnerOrAdminFilterBackend
 from core.permissions import IsManagerOrAdmin
 
 from orders.models import Order
@@ -25,10 +24,10 @@ class OrderViewSet(ModelViewSet):
         "create": OrderDetailSerializer,
     }
     permission_to_method = {
+        "list": [IsManagerOrAdmin],
         "update": [IsManagerOrAdmin],
         "destroy": [IsManagerOrAdmin],
     }
-    filter_backends = (CanViewOwnerOrAdminFilterBackend,)
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.serializer_class)
@@ -43,7 +42,7 @@ class OrderViewSet(ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         order = self.get_object()
-        order.status = kwargs["status"]
+        order.status = request.data["status"]
         serializer = self.get_serializer(order)
         return Response(serializer.data)
 
