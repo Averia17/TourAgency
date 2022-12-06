@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from core.constants import TOUR_TYPES
+from core.models import ImageUploadMixin
 from core.permissions import IsManagerOrAdmin
 from locations.models import Destination
 from tours.filters import TourFilter
@@ -14,7 +15,7 @@ from tours.features.models import TourFeature
 from tours.serializers import TourSerializer, TourDetailSerializer
 
 
-class TourViewSet(ModelViewSet):
+class TourViewSet(ModelViewSet, ImageUploadMixin):
     queryset = Tour.objects.all().prefetch_related(
         "images",
         "arrival_dates",

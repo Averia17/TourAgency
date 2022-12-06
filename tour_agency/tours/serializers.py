@@ -11,6 +11,7 @@ from rest_framework.serializers import ModelSerializer
 from hotels.serializers import HotelDetailSerializer
 from images.models import TourImage
 from images.serializers import ImageSerializer, ImageUploadSerializer
+from images.services import FileStandardUploadService
 from tours.arrival_dates.serializers import ArrivalDatesSerializer
 from tours.features.serializers import TourFeatureSerializer
 from tours.models import Tour
@@ -52,7 +53,6 @@ class TourSerializer(ImageUploadSerializer):
             "description",
             "max_passengers",
             "price",
-            "uploaded_images"
         )
 
     def to_representation(self, instance):
@@ -66,7 +66,7 @@ class TourSerializer(ImageUploadSerializer):
 
 
 class TourDetailSerializer(ModelSerializer):
-    images = ImageSerializer(many=True, required=False)
+    images = ImageSerializer(many=True, read_only=True)
     tour_type = CharField(source="get_tour_type_display")
     features = TourFeatureSerializer(source="tour_features", many=True)
     arrival_dates = ArrivalDatesSerializer(many=True)

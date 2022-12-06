@@ -13,18 +13,13 @@ class ImageSerializer(ModelSerializer):
     def to_representation(self, instance):
         return super().to_representation(instance).get("url")
 
-
+# TODO: make mixin for viewset (not for serializer)
 class ImageUploadSerializer(ModelSerializer):
-    uploaded_images = ListField(child=ImageField(), write_only=True, required=False)
-
     image_model = Image
     additional_field = ""
 
-    class Meta:
-        fields = ("uploaded_images",)
-
     def create(self, validated_data):
-        images = validated_data.pop("uploaded_images", [])
+        images = validated_data.pop("images", [])
         instance = super().create(validated_data)
         user = self.context["request"].user
         service = FileStandardUploadService(self.image_model, user)
@@ -33,7 +28,7 @@ class ImageUploadSerializer(ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        images = validated_data.pop("uploaded_images", None)
+        images = validated_data.pop("images", None)
         instance = super().update(instance, validated_data)
         user = self.context["request"].user
         if images is not None:

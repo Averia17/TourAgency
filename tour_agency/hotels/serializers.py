@@ -91,7 +91,6 @@ class HotelSerializer(ImageUploadSerializer):
             "city",
             "street",
             "images",
-            "uploaded_images",
         )
 
     def to_representation(self, instance):
