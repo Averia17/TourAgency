@@ -2,11 +2,11 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet, ModelViewSet
 
 from core.permissions import IsManagerOrAdmin
-from locations.models import Continent, Country, Destination
+from locations.models import Continent, Country, Destination, City
 from locations.serializers import (
     ContinentDetailSerializer,
     CountrySerializer,
-    DestinationSerializer,
+    DestinationSerializer, CitySerializer,
 )
 
 
@@ -18,6 +18,11 @@ class ContinentViewSet(ReadOnlyModelViewSet):
 class CountryViewSet(ListModelMixin, GenericViewSet):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
+
+
+class CityViewSet(ListModelMixin, GenericViewSet):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
 
 
 class DestinationViewSet(ModelViewSet):

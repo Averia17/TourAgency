@@ -5,7 +5,7 @@ from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from hotels.views import HotelsViewSet, RoomViewSet
-from locations.views import ContinentViewSet, CountryViewSet, DestinationViewSet
+from locations.views import ContinentViewSet, CountryViewSet, DestinationViewSet, CityViewSet
 from orders.views import OrderViewSet, OrderPriceView
 from tour_agency import settings
 from tours.arrival_dates.views import ArrivalDateViewSet
@@ -30,6 +30,7 @@ router.register("orders", OrderViewSet)
 router.register("countries", CountryViewSet)
 router.register("destinations", DestinationViewSet)
 router.register("features", TourFeatureViewSet)
+router.register("cities", CityViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
