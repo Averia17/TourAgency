@@ -56,6 +56,7 @@ class RoomViewSet(ModelViewSet):
     serializer_classes = {
         "retrieve": RoomDetailSerializer,
         "create": RoomCreateSerializer,
+        "partial_update": RoomCreateSerializer,
     }
     permission_to_method = {
         "create": [IsManagerOrAdmin],
