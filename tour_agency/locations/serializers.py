@@ -8,7 +8,7 @@ from locations.models import City, Continent, Country, Destination
 
 class DestinationSerializer(ModelSerializer):
     image = ImageSerializer(read_only=True)
-    country = PrimaryKeyRelatedField(queryset=Country.objects.all(), write_only=True)
+    country = PrimaryKeyRelatedField(queryset=Country.objects.all())
 
     class Meta:
         model = Destination
