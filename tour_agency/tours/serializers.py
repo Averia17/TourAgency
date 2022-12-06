@@ -9,7 +9,8 @@ from rest_framework.fields import (
 from rest_framework.serializers import ModelSerializer
 
 from hotels.serializers import HotelDetailSerializer
-from images.serializers import ImageSerializer
+from images.models import TourImage
+from images.serializers import ImageSerializer, ImageUploadSerializer
 from tours.arrival_dates.serializers import ArrivalDatesSerializer
 from tours.features.serializers import TourFeatureSerializer
 from tours.models import Tour
@@ -32,10 +33,13 @@ class TourFeatureDetailSerializer(TourFeatureSerializer):
         ).data
 
 
-class TourSerializer(ModelSerializer):
-    images = ImageSerializer(many=True, required=False)
+class TourSerializer(ImageUploadSerializer):
+    images = ImageSerializer(many=True, read_only=True)
     max_passengers = IntegerField(write_only=True)
     price = DecimalField(write_only=True, decimal_places=2, max_digits=10)
+
+    image_model = TourImage
+    additional_field = "tour"
 
     class Meta:
         model = Tour
@@ -48,6 +52,7 @@ class TourSerializer(ModelSerializer):
             "description",
             "max_passengers",
             "price",
+            "uploaded_images"
         )
 
     def to_representation(self, instance):

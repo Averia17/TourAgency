@@ -52,6 +52,7 @@ class Image(BaseModel):
 
 class HotelImage(Image):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name="images")
+    objects = ImageManager.as_manager()
 
     class Meta(Image.Meta):
         verbose_name_plural = "HotelImages"

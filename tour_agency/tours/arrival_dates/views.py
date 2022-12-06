@@ -21,6 +21,7 @@ class ArrivalDateViewSet(ModelViewSet):
         "list": [IsManagerOrAdmin],
         "create": [IsManagerOrAdmin],
         "update": [IsManagerOrAdmin],
+        "partial_update": [IsManagerOrAdmin],
         "destroy": [IsManagerOrAdmin],
     }
 

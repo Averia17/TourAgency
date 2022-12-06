@@ -1,10 +1,8 @@
 from django.db.models import Prefetch
-from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from core.models import ImageUploadMixin
 from core.permissions import IsManagerOrAdmin
-from core.utils import string_to_list, true
 from hotels.models import Hotel, RoomType
 from hotels.serializers import (
     HotelSerializer,
@@ -16,7 +14,7 @@ from hotels.serializers import (
 from hotels.services import filter_rooms
 
 
-class HotelsViewSet(ModelViewSet, ImageUploadMixin):
+class HotelsViewSet(ModelViewSet):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
 
@@ -26,6 +24,7 @@ class HotelsViewSet(ModelViewSet, ImageUploadMixin):
     permission_to_method = {
         "create": [IsManagerOrAdmin],
         "update": [IsManagerOrAdmin],
+        "partial_update": [IsManagerOrAdmin],
         "destroy": [IsManagerOrAdmin],
     }
 
@@ -48,7 +47,6 @@ class HotelsViewSet(ModelViewSet, ImageUploadMixin):
                 queryset=filter_rooms(params),
             )
         )
-
         return queryset
 
 
@@ -62,6 +60,7 @@ class RoomViewSet(ModelViewSet):
     permission_to_method = {
         "create": [IsManagerOrAdmin],
         "update": [IsManagerOrAdmin],
+        "partial_update": [IsManagerOrAdmin],
         "destroy": [IsManagerOrAdmin],
     }
 

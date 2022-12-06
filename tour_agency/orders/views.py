@@ -26,6 +26,7 @@ class OrderViewSet(ModelViewSet):
     permission_to_method = {
         "list": [IsManagerOrAdmin],
         "update": [IsManagerOrAdmin],
+        "partial_update": [IsManagerOrAdmin],
         "destroy": [IsManagerOrAdmin],
     }
 
@@ -43,6 +44,7 @@ class OrderViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         order = self.get_object()
         order.status = request.data["status"]
+        order.save()
         serializer = self.get_serializer(order)
         return Response(serializer.data)
 

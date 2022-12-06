@@ -17,7 +17,7 @@ class TourFeatureViewSet(ModelViewSet):
     serializer_classes = {
         "retrieve": TourFeatureSerializer,
         "create": TourFeatureCreateSerializer,
-        "update": TourFeatureCreateSerializer,
+        "partial_update": TourFeatureCreateSerializer,
     }
 
     def get_serializer_class(self):

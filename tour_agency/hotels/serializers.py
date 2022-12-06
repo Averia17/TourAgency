@@ -1,11 +1,10 @@
-from rest_framework.fields import CharField, SerializerMethodField
-from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework.fields import CharField, SerializerMethodField, ListField, ImageField
 from rest_framework.serializers import ModelSerializer
 
-from core.utils import string_to_list, string_to_datetime
+from core.utils import string_to_datetime
 from hotels.models import Hotel, RoomType, Convenience
 from images.models import HotelImage
-from images.serializers import ImageSerializer
+from images.serializers import ImageSerializer, ImageUploadSerializer
 from images.services import FileStandardUploadService
 from locations.serializers import CitySerializer
 from tours.services import AvailableRoomsService
@@ -77,9 +76,11 @@ class SimpleHotelSerializer(ModelSerializer):
         return result
 
 
-class HotelSerializer(ModelSerializer):
-    images = ImageSerializer(many=True, required=False)
-    conveniences = PrimaryKeyRelatedField(many=True, queryset=Convenience.objects.all())
+class HotelSerializer(ImageUploadSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
+    image_model = HotelImage
+    additional_field = "hotel"
 
     class Meta:
         model = Hotel
@@ -90,40 +91,12 @@ class HotelSerializer(ModelSerializer):
             "city",
             "street",
             "images",
-            "conveniences",
+            "uploaded_images",
         )
-
-    def to_internal_value(self, data):
-        if hasattr(data, "dict"):
-            data = data.dict()
-        data.pop("images", None)
-        data["conveniences"] = string_to_list(data.get("conveniences"))
-        return super().to_internal_value(data)
 
     def to_representation(self, instance):
         self.fields["city"] = CitySerializer(read_only=True)
-        self.fields["conveniences"] = ConvenienceSerializer(many=True, read_only=True)
         return super().to_representation(instance)
-
-    def create(self, validated_data):
-        images = validated_data.pop("images")
-        user = self.context["request"].user
-        instance = super().create(validated_data)
-        service = FileStandardUploadService(HotelImage, user)
-        for image in images:
-            service.create(image, hotel=instance)
-        return instance
-
-    def update(self, instance, validated_data):
-        images = validated_data.pop("images", None)
-        user = self.context["request"].user
-        instance = super().update(instance, validated_data)
-        if images is not None:
-            instance.images.clear()
-            service = FileStandardUploadService(HotelImage, user)
-            for image in images:
-                service.create(image, hotel=instance)
-        return instance
 
 
 class HotelDetailSerializer(HotelSerializer):

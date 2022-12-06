@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django import forms
+from rest_framework import mixins
 
 
 class ChoiceArrayField(ArrayField):
@@ -21,7 +22,7 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class ImageUploadMixin:
+class ImageUploadMixin(mixins.CreateModelMixin, mixins.UpdateModelMixin):
     def perform_create(self, serializer):
         serializer.save(images=self.request.FILES.getlist("images"))
 

@@ -43,6 +43,7 @@ class TourViewSet(ModelViewSet):
     permission_to_method = {
         "create": [IsManagerOrAdmin],
         "update": [IsManagerOrAdmin],
+        "partial_update": [IsManagerOrAdmin],
         "destroy": [IsManagerOrAdmin],
     }
 
