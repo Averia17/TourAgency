@@ -30,14 +30,13 @@ from tour_agency.tasks import send_user_email
 class UserViewSet(mixins.CreateModelMixin, GenericViewSet):
     serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=["GET"], serializer_class=UserDetailSerializer)
+    @action(detail=False, methods=["GET"], serializer_class=UserDetailSerializer, permission_classes=[IsAuthenticated])
     def my(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    @action(detail=False, methods=["POST"])
+    @action(detail=False, methods=["POST"], permission_classes=[IsAuthenticated])
     def has_admin_access(self, request):
         return Response(request.user.is_staff or request.user.is_manager)
 
