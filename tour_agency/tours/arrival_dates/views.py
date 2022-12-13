@@ -14,8 +14,8 @@ class ArrivalDateViewSet(ModelViewSet):
 
     serializer_classes = {
         "list": ArrivalDatesCreateSerializer,
-        "retrieve": ArrivalDateAvailableRoomsSerializer,
         "create": ArrivalDatesCreateSerializer,
+        "partial_update": ArrivalDatesCreateSerializer,
     }
     permission_to_method = {
         "list": [IsManagerOrAdmin],

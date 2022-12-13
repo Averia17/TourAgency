@@ -84,9 +84,10 @@ class TourDetailSerializer(ModelSerializer):
 
 class TourDetailFeaturesSerializer(TourSerializer):
     features = SerializerMethodField()
+    price = DecimalField(read_only=True, decimal_places=2, max_digits=10)
 
     class Meta(TourSerializer.Meta):
-        fields = TourSerializer.Meta.fields + ("features",)
+        fields = TourSerializer.Meta.fields + ("features", "price")
 
     def get_features(self, obj):
         start = self.context.get("start")

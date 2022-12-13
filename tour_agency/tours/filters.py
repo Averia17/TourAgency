@@ -9,6 +9,7 @@ class ListFilter(Filter):
         super(ListFilter, self).__init__(*args, **kwargs)
         self.query_param = query_param
         self.lookup_expr = "in"
+        self.distinct = True
 
     def filter(self, queryset, value):
         try:

@@ -25,7 +25,7 @@ class ArrivalDateDetailSerializer(ModelSerializer):
 
     class Meta:
         model = ArrivalDates
-        fields = ("id", "date", "tour")
+        fields = ("id", "date", "discount", "tour")
 
 
 class ArrivalDateAvailableRoomsSerializer(ArrivalDateDetailSerializer):

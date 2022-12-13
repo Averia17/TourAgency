@@ -26,7 +26,7 @@ class Tour(BaseModel):
     def min_price(self):
         hotel_price = sum(
             [
-                feature.min_room_price
+                feature.min_room_price * feature.days
                 for feature in self.tour_features.filter(hotel__isnull=False).annotate(
                     min_room_price=Min("hotel__room_types__cost_per_day")
                 )
